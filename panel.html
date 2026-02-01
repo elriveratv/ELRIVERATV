@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Control Panel - elriveratv PRO</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;900&family=Oswald:wght@300;500;700&family=Roboto+Mono:wght@700&display=swap');
+        :root { --primary: #4A148C; --accent: #E91E63; --bg-deep: #1a1d26; --card-bg: #242834; --input-bg: #14161f; --text-main: #ffffff; --text-dim: #a0a5b8; --green: #00e676; --purple-btn: #ab47bc; }
+        body { background-color: var(--bg-deep); color: var(--text-main); font-family: 'Montserrat', sans-serif; margin: 0; padding: 0; }
+        
+        .broadcast-header { background: rgba(10, 10, 10, 0.4); padding: 25px 50px; display: flex; justify-content: space-between; align-items: flex-start; border-bottom: 2px solid var(--primary); }
+        .header-left { display: flex; flex-direction: column; gap: 5px; }
+        .brand-row { display: flex; align-items: baseline; gap: 15px; }
+        .brand-main { font-weight: 900; font-size: 38px; color: var(--accent); margin: 0; text-transform: uppercase; line-height: 1; }
+        .brand-sub { font-weight: 700; font-size: 14px; color: var(--text-main); letter-spacing: 2px; text-transform: uppercase; }
+        .status-indicator { display: flex; align-items: center; gap: 8px; font-weight: 700; font-size: 16px; text-transform: uppercase; margin-top: 5px; }
+        .dot { width: 10px; height: 10px; background-color: var(--green); border-radius: 50%; box-shadow: 0 0 8px var(--green); }
+        
+        .header-right { text-align: right; }
+        .header-clock { font-family: 'Roboto Mono', monospace; font-weight: 700; font-size: 32px; margin: 0; line-height: 1; }
+        .header-date { font-size: 12px; font-weight: 700; text-transform: uppercase; color: var(--text-dim); margin-top: 8px; letter-spacing: 1px; }
+
+        .main-content { padding: 30px; }
+        .grid-container { display: grid; grid-template-columns: repeat(3, 1fr); gap: 25px; max-width: 1300px; margin: 0 auto; }
+        .column { background: var(--card-bg); padding: 25px; border-radius: 12px; box-shadow: 0 15px 35px rgba(0,0,0,0.3); }
+        h2 { font-family: 'Oswald', sans-serif; font-size: 1rem; text-transform: uppercase; margin-bottom: 25px; border-left: 4px solid var(--purple-btn); padding-left: 10px; }
+        
+        .control-group { margin-bottom: 18px; }
+        label { display: block; font-size: 11px; margin-bottom: 8px; color: var(--text-dim); font-weight: 700; text-transform: uppercase; }
+        input, textarea { width: 100%; padding: 12px; background: var(--input-bg); border: 1px solid rgba(255,255,255,0.05); color: white; border-radius: 8px; box-sizing: border-box; font-size: 13px; outline: none; }
+        
+        .switch-group { display: flex; justify-content: space-between; align-items: center; padding: 10px 0; border-bottom: 1px solid rgba(255,255,255,0.03); }
+        .switch { position: relative; display: inline-block; width: 42px; height: 22px; }
+        .switch input { opacity: 0; width: 0; height: 0; }
+        .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #3e4451; transition: .4s; border-radius: 20px; }
+        .slider:before { position: absolute; content: ""; height: 16px; width: 16px; left: 3px; bottom: 3px; background-color: white; transition: .4s; border-radius: 50%; }
+        input:checked + .slider { background-color: var(--purple-btn); }
+        input:checked + .slider:before { transform: translateX(20px); }
+
+        .color-row { display: flex; align-items: center; gap: 15px; background: var(--input-bg); padding: 10px; border-radius: 8px; margin-bottom: 10px; }
+        input[type="color"] { -webkit-appearance: none; border: none; width: 35px; height: 35px; cursor: pointer; background: transparent; padding: 0; }
+        .color-hex { font-family: 'Roboto Mono', monospace; font-size: 12px; color: var(--purple-btn); font-weight: bold; }
+        
+        .btn-refresh { width: 100%; padding: 14px; background: var(--purple-btn); color: white; border: none; border-radius: 8px; font-weight: 900; text-transform: uppercase; cursor: pointer; margin-top: 15px; }
+    </style>
+</head>
+<body>
+    <header class="broadcast-header">
+        <div class="header-left">
+            <div class="brand-row"><h1 class="brand-main">ELRIVERATV</h1><span class="brand-sub">PRO BROADCAST</span></div>
+            <div class="status-indicator"><span class="dot"></span><span>ONLINE</span></div>
+        </div>
+        <div class="header-right">
+            <p class="header-clock" id="live-clock">00:00:00 AM</p>
+            <p class="header-date" id="live-date">---</p>
+        </div>
+    </header>
+    
+    <div class="main-content">
+        <div class="grid-container">
+            <div class="column">
+                <h2>Visibilidad</h2>
+                <div class="switch-group"><span>En Vivo</span><label class="switch"><input type="checkbox" id="showLive" onchange="save()"><span class="slider"></span></label></div>
+                <div class="switch-group"><span>Ciudad</span><label class="switch"><input type="checkbox" id="showLocation" onchange="save()"><span class="slider"></span></label></div>
+                <div class="switch-group"><span>Temperatura</span><label class="switch"><input type="checkbox" id="showTemp" onchange="save()"><span class="slider"></span></label></div>
+                <div class="switch-group" style="background:rgba(233,30,99,0.1); padding:5px 10px; border-radius:5px;"><span>Contador T-</span><label class="switch"><input type="checkbox" id="showMission" onchange="save()"><span class="slider"></span></label></div>
+                <div class="switch-group" style="background:rgba(233,30,99,0.1); padding:5px 10px; border-radius:5px;"><span>Etiqueta T-</span><label class="switch"><input type="checkbox" id="showMissionLabel" onchange="save()"><span class="slider"></span></label></div>
+                <div class="switch-group"><span>Fecha Superior</span><label class="switch"><input type="checkbox" id="showClock" onchange="save()"><span class="slider"></span></label></div>
+                <div class="switch-group"><span>Lower Third</span><label class="switch"><input type="checkbox" id="showLowerThird" onchange="save()"><span class="slider"></span></label></div>
+                <div class="switch-group"><span>Info Center</span><label class="switch"><input type="checkbox" id="showInfoCenter" onchange="save()"><span class="slider"></span></label></div>
+                <div class="switch-group"><span>Marca Inferior</span><label class="switch"><input type="checkbox" id="showBrand" onchange="save()"><span class="slider"></span></label></div>
+                <div class="switch-group"><span>Reloj Inferior</span><label class="switch"><input type="checkbox" id="showTime" onchange="save()"><span class="slider"></span></label></div>
+                <div class="switch-group"><span>Barra Ticker</span><label class="switch"><input type="checkbox" id="showWeather" onchange="save()"><span class="slider"></span></label></div>
+            </div>
+
+            <div class="column">
+                <h2>Contenidos</h2>
+                <div class="control-group"><label>Meta Contador (YYYY-MM-DD HH:MM:SS)</label><input type="text" id="targetDate" placeholder="2026-02-01 20:00:00" oninput="save()"></div>
+                <div class="control-group"><label>Texto Etiqueta T-</label><input type="text" id="missionLabelText" oninput="save()"></div>
+                <div class="control-group"><label>L3: Nombre</label><input type="text" id="ltMain" oninput="save()"></div>
+                <div class="control-group"><label>L3: Cargo</label><input type="text" id="ltSub" oninput="save()"></div>
+                <div class="control-group"><label>Info Center: Título</label><input type="text" id="infoTitle" oninput="save()"></div>
+                <div class="control-group"><label>Info Center: Cuerpo</label><textarea id="infoBody" rows="2" oninput="save()"></textarea></div>
+            </div>
+
+            <div class="column">
+                <h2>Estilo</h2>
+                <div class="control-group"><label>Ticker Texto</label><textarea id="weatherText" rows="3" oninput="save()"></textarea></div>
+                <div class="color-row"><input type="color" id="colorPrimary" oninput="save()"><div style="flex:1"><label>Primario</label><span class="color-hex" id="hexPrimary">#4A148C</span></div></div>
+                <div class="color-row"><input type="color" id="colorAccent" oninput="save()"><div style="flex:1"><label>Acento</label><span class="color-hex" id="hexAccent">#E91E63</span></div></div>
+                <button class="btn-refresh" onclick="location.reload()">Refrescar</button>
+            </div>
+        </div>
+    </div>
+    <script>
+        // CANAL DE COMUNICACIÓN INSTANTÁNEA
+        const canalRIVERA = new BroadcastChannel('elriveratv_stream');
+
+        const fields = ['targetDate', 'showMission', 'showMissionLabel', 'missionLabelText', 'showLive', 'showLocation', 'showTemp', 'showClock', 'showLowerThird', 'showInfoCenter', 'showBrand', 'showTime', 'showWeather', 'ltMain', 'ltSub', 'infoTitle', 'infoBody', 'weatherText', 'colorPrimary', 'colorAccent'];
+        
+        function save() { 
+            fields.forEach(id => { 
+                const el = document.getElementById(id); 
+                if(el) localStorage.setItem(id, el.type === 'checkbox' ? el.checked : el.value); 
+            }); 
+            updateHexLabels(); 
+            // ENVÍO DE SEÑAL
+            canalRIVERA.postMessage({ type: 'UPDATE' });
+        }
+        
+        function load() { 
+            fields.forEach(id => { 
+                const val = localStorage.getItem(id); 
+                const el = document.getElementById(id); 
+                if (el) { if (el.type === 'checkbox') el.checked = (val === 'true'); else el.value = val || ""; } 
+            }); 
+            updateHexLabels(); 
+        }
+
+        function updateHexLabels() {
+            document.getElementById('hexPrimary').innerText = document.getElementById('colorPrimary').value.toUpperCase();
+            document.getElementById('hexAccent').innerText = document.getElementById('colorAccent').value.toUpperCase();
+        }
+
+        setInterval(() => { 
+            const now = new Date();
+            document.getElementById('live-clock').innerText = now.toLocaleTimeString('en-US', { hour12: true }); 
+            document.getElementById('live-date').innerText = now.toLocaleDateString('es-MX', { weekday: 'long', day: 'numeric', month: 'long' }).toUpperCase();
+        }, 1000);
+        window.onload = load;
+    </script>
+</body>
+</html>

@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Montserrat:wght@700;900&family=Oswald:wght@300;500;700&family=Roboto+Mono:wght@700&display=swap');
+        
+        :root {
+            --primary: #4A148C;
+            --accent: #E91E63;
+            --glass: rgba(0, 0, 0, 0.85);
+            --white: #ffffff;
+            --green: #00e676;
+        }
+
+        body { background-color: transparent; margin: 0; padding: 0; overflow: hidden; font-family: 'Oswald', sans-serif; color: var(--white); }
+
+        /* --- INFO CENTER: RESTAURADO DISEÑO PRO --- */
+        .info-center { 
+            position: absolute; bottom: 85px; left: 50%; transform: translateX(-50%) scale(0); 
+            background: var(--glass); border: 3px solid var(--primary); border-bottom: 8px solid var(--primary);
+            width: 500px; padding: 20px; text-align: center; transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1); 
+            z-index: 500; opacity: 0; backdrop-filter: blur(10px);
+        }
+        .info-visible { transform: translateX(-50%) scale(1) !important; opacity: 1 !important; }
+
+        /* --- LOWER THIRD --- */
+        .lt-container { position: absolute; bottom: 80px; left: 40px; display: flex; flex-direction: column; transform: translateX(-110%); transition: all 0.8s cubic-bezier(0.16, 1, 0.3, 1); z-index: 500; opacity: 0; }
+        .lt-visible { transform: translateX(0) !important; opacity: 1 !important; }
+        .lt-main { background: var(--primary); padding: 5px 30px; font-family: 'Bebas Neue'; font-size: 35px; border-left: 6px solid var(--accent); width: fit-content; }
+        .lt-sub { background: var(--glass); padding: 3px 30px; font-size: 15px; font-weight: 300; text-transform: uppercase; border-top: 1px solid rgba(255,255,255,0.1); width: fit-content; backdrop-filter: blur(5px); }
+
+        /* --- BLOQUES SUPERIORES --- */
+        .top-left-box { position: absolute; top: 40px; left: 40px; z-index: 400; display: flex; flex-direction: column; align-items: flex-start; }
+        .status-row { display: flex; align-items: stretch; height: 38px; overflow: hidden; transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1); margin-bottom: 2px; }
+        .live-status { background: var(--primary); padding: 0 25px; font-weight: 700; font-size: 18px; border-left: 5px solid var(--accent); display: flex; align-items: center; }
+        .location-box { background: var(--glass); padding: 0 20px; font-size: 18px; border-left: 2px solid rgba(255,255,255,0.2); display: flex; align-items: center; backdrop-filter: blur(5px); }
+        .temp-box { background: var(--accent); padding: 0 15px; font-weight: 700; font-size: 18px; display: flex; align-items: center; border-left: 1px solid rgba(255,255,255,0.2); }
+        .date-container { overflow: hidden; max-height: 40px; transition: max-height 0.6s cubic-bezier(0.16, 1, 0.3, 1); }
+        .date-box { background: var(--glass); padding: 8px 20px; font-weight: 300; font-size: 18px; border-top: 2px solid var(--accent); white-space: nowrap; transform: translateY(0); transition: transform 0.6s ease; backdrop-filter: blur(5px); }
+
+        /* --- GRUPO MISIÓN --- */
+        .mission-group { position: absolute; top: 40px; right: 40px; display: flex; flex-direction: column; align-items: flex-end; z-index: 400; }
+        .mission-counter { background: var(--glass); display: flex; align-items: stretch; height: 45px; border-right: 5px solid var(--accent); position: relative; z-index: 20; transition: all 0.6s ease; backdrop-filter: blur(5px); }
+        .counter-label { background: var(--primary); width: 55px; display: flex; align-items: center; justify-content: center; font-family: 'Bebas Neue'; font-size: 24px; }
+        .counter-digits { width: 155px; display: flex; align-items: center; justify-content: center; font-family: 'Roboto Mono', monospace; font-size: 26px; font-weight: 700; }
+        .mission-label-box { background: var(--primary); padding: 4px 15px; font-size: 14px; font-weight: 700; text-transform: uppercase; border-right: 5px solid white; margin-top: 5px; transition: all 0.6s ease; }
+
+        /* --- BARRA INFERIOR --- */
+        .bottom-container { position: absolute; bottom: 0; width: 100%; height: 60px; display: flex; align-items: stretch; z-index: 100; overflow: hidden; }
+        .ticker-wrapper { position: absolute; left: 0; top: 0; width: 100%; height: 100%; background: var(--glass); overflow: hidden; display: flex; align-items: center; z-index: 1; transition: transform 0.6s ease; backdrop-filter: blur(5px); }
+        #ui-ticker-horizontal { display: flex; white-space: nowrap; position: absolute; left: 0; width: max-content; }
+        .ticker-item { padding-right: 120px; font-size: 20px; font-weight: 500; display: inline-block; }
+        .brand-label { position: relative; z-index: 10; background: var(--accent); padding: 0 25px; display: flex; align-items: center; font-weight: 900; font-size: 22px; font-family: 'Montserrat'; transition: all 0.6s ease; white-space: nowrap; }
+        .clock-ticker { position: relative; z-index: 10; background: var(--primary); padding: 0 20px; display: flex; align-items: center; justify-content: center; font-family: 'Bebas Neue'; min-width: 160px; border-right: 3px solid var(--accent); transition: all 0.6s ease; white-space: nowrap; }
+
+        /* --- ESTADOS --- */
+        .element-hidden { width: 0 !important; max-width: 0 !important; opacity: 0 !important; padding: 0 !important; margin: 0 !important; border: none !important; visibility: hidden; }
+        .counter-hidden { transform: translateY(-65px) !important; opacity: 0 !important; }
+        .counter-hidden + .mission-label-box { transform: translateY(-50px); }
+        .label-hidden { transform: translateY(-55px); opacity: 0; visibility: hidden; }
+        .row-empty { height: 0 !important; margin-bottom: 0 !important; opacity: 0; }
+        .date-hidden { max-height: 0 !important; }
+        .date-hidden .date-box { transform: translateY(-100%); }
+        .ticker-only-hidden { transform: translateY(65px); opacity: 0; }
+    </style>
+</head>
+<body>
+    <div class="info-center" id="ui-info-center"><div id="val-info-title" style="font-weight:900; font-size:24px; color:var(--accent); margin-bottom:5px;"></div><div id="val-info-body" style="font-size:18px;"></div></div>
+    <div class="lt-container" id="ui-lt-group"><div class="lt-main" id="val-lt-main"></div><div class="lt-sub" id="val-lt-sub"></div></div>
+    <div class="top-left-box"><div class="status-row" id="ui-status-row"><div class="live-status" id="ui-live">EN VIVO</div><div class="location-box" id="ui-location">TEPIC</div><div class="temp-box" id="ui-temp">--°C</div></div><div class="date-container" id="ui-date-row"><div class="date-box" id="ui-date">---</div></div></div>
+    <div class="mission-group"><div class="mission-counter" id="ui-mission-counter"><div class="counter-label"><span style="color:white">T</span><span id="counter-sign">-</span></div><div class="counter-digits" id="ui-counter">00:00:00</div></div><div class="mission-label-box" id="ui-mission-label"></div></div>
+    <div class="bottom-container" id="ui-bottom-bar"><div class="ticker-wrapper" id="ui-ticker-wrapper"><div id="ui-ticker-horizontal"></div></div><div class="brand-label" id="ui-brand">ELRIVERATV</div><div class="clock-ticker" id="ui-clock-box"><span id="ui-time-main" style="font-size:34px; margin-right:8px;">00:00:00</span><span id="ui-time-period" style="font-size:16px; opacity:0.8; font-family:'Bebas Neue';">AM</span></div></div>
+
+    <script>
+        let lastHText = "";
+        const canalRIVERA = new BroadcastChannel('elriveratv_stream');
+        canalRIVERA.onmessage = (e) => { if(e.data.type === 'UPDATE') sync(); };
+
+        async function updateWeather() { try { const res = await fetch('https://api.open-meteo.com/v1/forecast?latitude=21.509&longitude=-104.895&current_weather=true'); const data = await res.json(); if (data.current_weather) document.getElementById('ui-temp').innerText = `${Math.round(data.current_weather.temperature)}°C`; } catch (e) {} }
+        
+        function sync() {
+            try {
+                const getVal = (id, def) => localStorage.getItem(id) || def;
+                document.documentElement.style.setProperty('--primary', getVal('colorPrimary', '#4A148C'));
+                document.documentElement.style.setProperty('--accent', getVal('colorAccent', '#E91E63'));
+                document.getElementById('ui-live').classList.toggle('element-hidden', getVal('showLive', 'true') === 'false');
+                document.getElementById('ui-location').classList.toggle('element-hidden', getVal('showLocation', 'true') === 'false');
+                document.getElementById('ui-temp').classList.toggle('element-hidden', getVal('showTemp', 'true') === 'false');
+                document.getElementById('ui-date-row').classList.toggle('date-hidden', getVal('showClock', 'true') === 'false');
+                document.getElementById('ui-brand').classList.toggle('element-hidden', getVal('showBrand', 'true') === 'false');
+                document.getElementById('ui-clock-box').classList.toggle('element-hidden', getVal('showTime', 'true') === 'false');
+                document.getElementById('ui-ticker-wrapper').classList.toggle('ticker-only-hidden', getVal('showWeather', 'true') === 'false');
+                document.getElementById('ui-info-center').classList.toggle('info-visible', getVal('showInfoCenter', 'false') === 'true');
+                document.getElementById('ui-lt-group').classList.toggle('lt-visible', getVal('showLowerThird', 'false') === 'true');
+                document.getElementById('ui-mission-counter').classList.toggle('counter-hidden', getVal('showMission', 'false') === 'false');
+                document.getElementById('val-lt-main').innerText = (getVal('ltMain', '')).toUpperCase();
+                document.getElementById('val-lt-sub').innerText = (getVal('ltSub', '')).toUpperCase();
+                document.getElementById('val-info-title').innerText = (getVal('infoTitle', '')).toUpperCase();
+                document.getElementById('val-info-body').innerText = getVal('infoBody', '');
+                document.getElementById('ui-location').innerText = (getVal('location', 'TEPIC')).toUpperCase();
+                const showLab = getVal('showMissionLabel', 'false') === 'true';
+                document.getElementById('ui-mission-label').innerText = (getVal('missionLabelText', '')).toUpperCase();
+                document.getElementById('ui-mission-label').classList.toggle('label-hidden', !showLab);
+                updateTicker();
+            } catch (e) {}
+        }
+
+        function updateTicker() {
+            const text = (localStorage.getItem('weatherText') || "BIENVENIDOS...").toUpperCase();
+            const container = document.getElementById('ui-ticker-horizontal');
+            if (text !== lastHText) { 
+                lastHText = text; container.innerHTML = ''; 
+                for(let i=0; i<10; i++) { const span = document.createElement('span'); span.className = 'ticker-item'; span.innerText = text; container.appendChild(span); }
+                setTimeout(() => { if(container.children[0]){ const width = container.children[0].offsetWidth; document.documentElement.style.setProperty('--move-width', `-${width}px`); container.style.animation = `ticker-loop ${width / 75}s linear infinite`; } }, 50); 
+            }
+        }
+
+        setInterval(() => {
+            const now = new Date();
+            document.getElementById('ui-time-main').innerText = now.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false });
+            document.getElementById('ui-time-period').innerText = now.getHours() >= 12 ? 'PM' : 'AM';
+            document.getElementById('ui-date').innerText = now.toLocaleDateString('es-MX', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' }).toUpperCase();
+        }, 1000);
+
+        setInterval(() => { 
+            const targetStr = localStorage.getItem('targetDate');
+            if (!targetStr) return;
+            let fixedDate = targetStr.replace(/-/g, "/").replace(/(\d{4}\/\d{2}\/\d{2}):(\d{2}:)/, "$1 $2");
+            const target = new Date(fixedDate).getTime();
+            const now = new Date().getTime();
+            const diff = target - now; const abs = Math.abs(diff);
+            const h = Math.floor(abs/3600000); const m = Math.floor((abs%3600000)/60000); const s = Math.floor((abs%60000)/1000);
+            document.getElementById('counter-sign').innerText = diff > 0 ? "-" : "+";
+            document.getElementById('ui-counter').innerText = `${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
+        }, 1000);
+        updateWeather(); setInterval(updateWeather, 1800000); setInterval(sync, 1000); sync();
+    </script>
+    <style>@keyframes ticker-loop { from { transform: translateX(0); } to { transform: translateX(var(--move-width, -100%)); } }</style>
+</body>
+</html>
