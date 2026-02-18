@@ -57,7 +57,7 @@
         .temp-box { background: var(--accent); padding: 8px 20px; font-weight: 700; font-size: 18px; border-left: 1px solid rgba(255,255,255,0.3); white-space: nowrap; transition: all 0.6s; }
         .date-box { background: var(--glass); padding: 6px 20px; font-weight: 500; font-size: 16px; border-top: 3px solid var(--accent); white-space: nowrap; transition: all 0.6s; }
 
-        /* --- TICKER DINÁMICO --- */
+        /* --- TICKER DINÁMICO CORREGIDO --- */
         .bottom-container { position: absolute; bottom: 0; width: 100%; height: 60px; display: flex; align-items: stretch; z-index: 100; }
         .brand-label { background: var(--accent); height: 100%; padding: 0 25px; display: flex; align-items: center; font-weight: 900; font-size: 22px; white-space: nowrap; flex-shrink: 0; transition: all 0.6s; }
         .clock-ticker { background: var(--primary); height: 100%; padding: 0 20px; display: flex; align-items: center; justify-content: center; font-family: 'Bebas Neue', cursive; border-right: 3px solid var(--accent); flex-shrink: 0; transition: all 0.6s; min-width: 140px; }
@@ -70,9 +70,7 @@
             box-shadow: inset 0 3px 0 var(--primary); 
             display: flex; align-items: center; overflow: hidden; 
             transition: all 0.8s; 
-            /* Ajustado: empieza sólido (100% black) desde el 0% para que pegue al borde */
-            -webkit-mask-image: linear-gradient(to right, black 0%, black 90%, transparent 100%);
-            mask-image: linear-gradient(to right, black 0%, black 90%, transparent 100%);
+            /* Efecto desvanecido eliminado */
         }
 
         .ticker-content {
@@ -81,11 +79,10 @@
             white-space: nowrap;
             will-change: transform;
             animation: ticker-loop linear infinite;
-            padding-left: 15px; /* Pequeño margen interno para que no choque con la línea de borde */
         }
 
         .ticker-text {
-            padding-right: 100px; 
+            padding-right: 80px; /* Espacio entre repeticiones */
             font-size: 20px;
             font-weight: 500;
             display: inline-block;
@@ -134,9 +131,7 @@
         </div>
         <div class="ticker-wrapper" id="ui-ticker-wrapper">
             <div class="ticker-content" id="ui-ticker-content">
-                <span class="ticker-text" id="val-weather-text">BIENVENIDOS A ELRIVERATV...</span>
-                <span class="ticker-text" id="val-weather-text-2">BIENVENIDOS A ELRIVERATV...</span>
-            </div>
+                </div>
         </div>
     </div>
 
@@ -192,17 +187,30 @@
 
             if(data.location) document.getElementById('ui-location-box').innerText = data.location.toUpperCase();
             
+            // Lógica de Ticker Mejorada: Repetir texto si es corto
             const rawText = (data.weatherText || "BIENVENIDOS A ELRIVERATV...").toUpperCase();
             if (rawText !== lastText) {
                 lastText = rawText;
+                const tickerContent = document.getElementById('ui-ticker-content');
+                tickerContent.innerHTML = ''; // Limpiar
+
                 const separator = "  •  ";
-                const content = rawText + separator;
+                const fullItem = rawText + separator;
                 
-                document.getElementById('val-weather-text').innerText = content;
-                document.getElementById('val-weather-text-2').innerText = content;
+                // Si el texto es corto, lo repetimos más veces para que el -50% no deje huecos
+                // Necesitamos que el total sea al menos el doble del ancho de pantalla
+                let repetitions = rawText.length < 20 ? 8 : 4; 
                 
-                let duration = Math.max(8, (content.length * 2) / 10); 
-                document.getElementById('ui-ticker-content').style.animationDuration = `${duration}s`;
+                for(let i = 0; i < repetitions; i++) {
+                    const span = document.createElement('span');
+                    span.className = 'ticker-text';
+                    span.innerText = fullItem;
+                    tickerContent.appendChild(span);
+                }
+                
+                // Ajustar velocidad: a más texto, más tiempo para mantener velocidad constante
+                let duration = Math.max(10, (fullItem.length * repetitions) / 15); 
+                tickerContent.style.animationDuration = `${duration}s`;
             }
         });
 
