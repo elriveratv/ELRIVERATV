@@ -12,6 +12,7 @@
             --primary: #4A148C;
             --accent: #E91E63;
             --green: #00e676;
+            --yellow: #ffd600;
             --text: #ffffff;
         }
 
@@ -138,12 +139,6 @@
         textarea { height: 70px; resize: vertical; }
         #inputNews { height: 100px; font-size: 0.9rem; line-height: 1.4; border-color: var(--primary); }
 
-        input[type="color"] {
-            height: 45px;
-            cursor: pointer;
-            padding: 5px;
-        }
-
         .color-grid {
             display: grid;
             grid-template-columns: 1fr 1fr 1fr;
@@ -176,6 +171,29 @@
         }
 
         .control-label { font-size: 0.85rem; font-weight: 600; }
+
+        .timer-controls {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .btn-timer {
+            padding: 10px;
+            border: none;
+            border-radius: 6px;
+            font-weight: bold;
+            font-size: 0.7rem;
+            cursor: pointer;
+            text-transform: uppercase;
+        }
+
+        .btn-hold { background: var(--yellow); color: #000; }
+        .btn-pause { background: #ff5252; color: white; }
+        .btn-play { background: var(--green); color: #000; }
+        .btn-reset { background: #666; color: white; }
+
     </style>
 </head>
 <body>
@@ -216,6 +234,35 @@
 
         <div class="module-card">
             <div class="module-header">
+                <span class="module-title">🚀 Reloj de Lanzamiento</span>
+                <label class="switch">
+                    <input type="checkbox" id="checkLaunch" onchange="toggle('showLaunchTimer', this.checked)">
+                    <span class="slider"></span>
+                </label>
+            </div>
+            <div class="input-group">
+                <label>NOMBRE DE LA MISIÓN / EVENTO</label>
+                <input type="text" id="inputMissionName" placeholder="Ej: MISIÓN ELRIVERATV" onkeyup="updateText('missionName', this.value)">
+            </div>
+            <div class="input-group">
+                <label>ETIQUETA DEL RELOJ</label>
+                <input type="text" id="inputLaunchLabel" placeholder="Ej: TIEMPO DE LANZAMIENTO" onkeyup="updateText('launchLabelText', this.value)">
+            </div>
+            <div class="input-group">
+                <label>FECHA Y HORA OBJETIVO (T-0)</label>
+                <input type="datetime-local" id="inputLaunchTarget" onchange="updateText('launchTarget', this.value)">
+            </div>
+            
+            <div class="timer-controls">
+                <button class="btn-timer btn-hold" onclick="setTimerState('HOLD')">HOLD</button>
+                <button class="btn-timer btn-pause" id="btnPauseResume" onclick="togglePause()">PAUSAR</button>
+                <button class="btn-timer btn-reset" onclick="resetTimer()">RESET</button>
+            </div>
+            <p id="timerStateLabel" style="font-size: 0.6rem; color: #aaa; margin-top: 10px; text-align: center;">ESTADO: NORMAL</p>
+        </div>
+
+        <div class="module-card">
+            <div class="module-header">
                 <span class="module-title">🆔 Identidad de Marca</span>
             </div>
             <div class="control-row">
@@ -233,21 +280,6 @@
             <div class="control-row">
                 <span class="control-label">Temperatura Actual</span>
                 <label class="switch"><input type="checkbox" id="checkTemp" onchange="toggle('showTemp', this.checked)"><span class="slider"></span></label>
-            </div>
-        </div>
-
-        <div class="module-card">
-            <div class="module-header">
-                <span class="module-title">🚀 Reloj de Lanzamiento</span>
-                <label class="switch">
-                    <input type="checkbox" id="checkLaunch" onchange="toggle('showLaunchTimer', this.checked)">
-                    <span class="slider"></span>
-                </label>
-            </div>
-            <div class="input-group">
-                <label>FECHA Y HORA OBJETIVO (T-0)</label>
-                <input type="datetime-local" id="inputLaunchTarget" onchange="updateText('launchTarget', this.value)">
-                <p style="font-size: 0.6rem; color: #666; margin-top: 8px;">* Al llegar a 0, el reloj seguirá contando el tiempo transcurrido (T+).</p>
             </div>
         </div>
 
@@ -312,7 +344,6 @@
             <div class="input-group">
                 <label>TEXTO DEL TICKER (DINÁMICO)</label>
                 <textarea id="inputNews" placeholder="Ingresa aquí las noticias o anuncios largos..." onkeyup="updateText('weatherText', this.value)"></textarea>
-                <p style="font-size: 0.6rem; color: #666; margin-top: 5px;">* El texto se repetirá automáticamente para cubrir toda la pantalla.</p>
             </div>
         </div>
 
@@ -333,6 +364,9 @@
     firebase.initializeApp(firebaseConfig);
     const db = firebase.database().ref('overlayData');
 
+    let currentTimerState = "RUNNING";
+    let pausedTime = 0;
+
     function updateRefClock() {
         const now = new Date();
         document.getElementById('ref-time').innerText = now.toLocaleTimeString('es-MX', { hour12: false });
@@ -349,8 +383,50 @@
         db.update({ [key]: value });
     }
 
+    function setTimerState(state) {
+        db.update({ timerState: state });
+    }
+
+    function togglePause() {
+        const newState = currentTimerState === "PAUSED" ? "RUNNING" : "PAUSED";
+        if (newState === "PAUSED") {
+            db.update({ 
+                timerState: "PAUSED",
+                pauseTimestamp: new Date().getTime()
+            });
+        } else {
+            const now = new Date().getTime();
+            const pauseStart = pausedTime;
+            const offset = now - pauseStart;
+            db.once('value', (snap) => {
+                const data = snap.val();
+                const oldTarget = new Date(data.launchTarget).getTime();
+                const newTarget = new Date(oldTarget + offset).toISOString();
+                db.update({ 
+                    timerState: "RUNNING",
+                    launchTarget: newTarget
+                });
+            });
+        }
+    }
+
+    function resetTimer() {
+        if(confirm("¿Reiniciar reloj de lanzamiento?")) {
+            db.update({ 
+                timerState: "RUNNING",
+                launchTarget: "",
+                missionName: "",
+                launchLabelText: ""
+            });
+            document.getElementById('inputLaunchTarget').value = "";
+            document.getElementById('inputMissionName').value = "";
+            document.getElementById('inputLaunchLabel').value = "";
+        }
+    }
+
     db.on('value', (snapshot) => {
         const data = snapshot.val() || {};
+        
         document.getElementById('checkLive').checked = data.showLive !== 'false';
         document.getElementById('checkLocation').checked = data.showLocation !== 'false';
         document.getElementById('checkBrand').checked = data.showBrand !== 'false';
@@ -369,6 +445,28 @@
         document.getElementById('inputInfoTitle').value = data.infoTitle || "";
         document.getElementById('inputInfoBody').value = data.infoBody || "";
         document.getElementById('inputLaunchTarget').value = data.launchTarget || "";
+        document.getElementById('inputMissionName').value = data.missionName || "";
+        document.getElementById('inputLaunchLabel').value = data.launchLabelText || "";
+
+        currentTimerState = data.timerState || "RUNNING";
+        pausedTime = data.pauseTimestamp || 0;
+        
+        const btnP = document.getElementById('btnPauseResume');
+        const stateLbl = document.getElementById('timerStateLabel');
+        
+        if(currentTimerState === "PAUSED") {
+            btnP.innerText = "REANUDAR";
+            btnP.className = "btn-timer btn-play";
+            stateLbl.innerText = "ESTADO: PAUSADO";
+        } else if (currentTimerState === "HOLD") {
+            btnP.innerText = "PAUSAR";
+            btnP.className = "btn-timer btn-pause";
+            stateLbl.innerText = "ESTADO: EN ESPERA (HOLD)";
+        } else {
+            btnP.innerText = "PAUSAR";
+            btnP.className = "btn-timer btn-pause";
+            stateLbl.innerText = "ESTADO: CORRIENDO";
+        }
 
         document.getElementById('colorPrimary').value = data.colorPrimary || "#4A148C";
         document.getElementById('colorAccent').value = data.colorAccent || "#E91E63";
