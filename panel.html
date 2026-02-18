@@ -21,13 +21,13 @@
             color: var(--text);
             font-family: 'Montserrat', sans-serif;
             margin: 0;
-            padding: 20px;
+            padding: 15px;
             display: flex;
             justify-content: center;
         }
 
         .dashboard {
-            max-width: 900px;
+            max-width: 1200px; /* Aumentado para permitir más columnas */
             width: 100%;
         }
 
@@ -36,164 +36,104 @@
             justify-content: space-between;
             align-items: center;
             border-bottom: 2px solid var(--primary);
-            padding-bottom: 15px;
-            margin-bottom: 30px;
+            padding-bottom: 10px;
+            margin-bottom: 20px;
         }
 
         .main-header h1 {
             font-family: 'Oswald', sans-serif;
             margin: 0;
-            letter-spacing: 2px;
+            letter-spacing: 1px;
             color: var(--accent);
+            font-size: 1.5rem;
         }
 
-        .reference-clock {
-            text-align: right;
-            font-family: 'Oswald', sans-serif;
-        }
-        #ref-time { font-size: 1.4rem; color: var(--text); display: block; line-height: 1; }
-        #ref-date { font-size: 0.75rem; color: #aaa; text-transform: uppercase; margin-top: 5px; display: block; }
+        .reference-clock { text-align: right; font-family: 'Oswald', sans-serif; }
+        #ref-time { font-size: 1.2rem; color: var(--text); display: block; line-height: 1; }
+        #ref-date { font-size: 0.65rem; color: #aaa; text-transform: uppercase; display: block; }
 
+        /* GRID OPTIMIZADO PARA MÁS COLUMNAS */
         .grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 25px;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); /* Columnas más estrechas */
+            gap: 15px;
         }
 
         .module-card {
             background: var(--card);
-            border-radius: 15px;
-            padding: 20px;
-            box-shadow: 0 10px 20px rgba(0,0,0,0.4);
+            border-radius: 12px;
+            padding: 15px;
+            box-shadow: 0 8px 16px rgba(0,0,0,0.4);
             border: 1px solid rgba(255,255,255,0.05);
-            transition: transform 0.3s ease;
+            height: fit-content;
         }
 
         .module-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 20px;
+            margin-bottom: 12px;
         }
 
         .module-title {
             font-weight: 700;
-            font-size: 0.8rem;
+            font-size: 0.7rem;
             text-transform: uppercase;
             letter-spacing: 1px;
             color: #aaa;
         }
 
-        .switch {
-            position: relative;
-            display: inline-block;
-            width: 50px;
-            height: 26px;
-        }
-
-        .switch input { opacity: 0; width: 0; height: 0; }
-
-        .slider {
-            position: absolute;
-            cursor: pointer;
-            top: 0; left: 0; right: 0; bottom: 0;
-            background-color: #333;
-            transition: .4s;
-            border-radius: 34px;
-        }
-
-        .slider:before {
-            position: absolute;
-            content: "";
-            height: 18px; width: 18px;
-            left: 4px; bottom: 4px;
-            background-color: white;
-            transition: .4s;
-            border-radius: 50%;
-        }
-
-        input:checked + .slider { background-color: var(--green); }
-        input:checked + .slider:before { transform: translateX(24px); }
-
-        .input-group { margin-top: 15px; }
-
-        label {
-            display: block;
-            font-size: 0.7rem;
-            margin-bottom: 5px;
-            color: var(--accent);
-            font-weight: bold;
-        }
-
-        input[type="text"], input[type="color"], textarea, input[type="datetime-local"] {
+        /* Preview Layout */
+        .layout-preview {
+            background: #000;
+            aspect-ratio: 16/9;
             width: 100%;
-            background: #0f111a;
-            border: 1px solid #333;
-            color: white;
-            padding: 10px;
-            border-radius: 8px;
-            box-sizing: border-box;
-            font-family: 'Montserrat', sans-serif;
-        }
-
-        textarea { height: 70px; resize: vertical; }
-        #inputNews { height: 100px; font-size: 0.9rem; line-height: 1.4; border-color: var(--primary); }
-
-        .color-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr 1fr;
-            gap: 10px;
-            margin-top: 10px;
-        }
-
-        .action-btn {
-            width: 100%;
-            margin-top: 15px;
-            background: var(--primary);
-            color: white;
-            border: none;
-            padding: 12px;
-            border-radius: 8px;
-            font-weight: bold;
-            cursor: pointer;
-            text-transform: uppercase;
-            font-size: 0.8rem;
-        }
-
-        .control-row {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            background: rgba(0,0,0,0.2);
-            padding: 12px;
-            margin-bottom: 10px;
-            border-radius: 8px;
-        }
-
-        .control-label { font-size: 0.85rem; font-weight: 600; }
-
-        .timer-controls {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 10px;
-            margin-top: 15px;
-        }
-
-        .btn-timer {
-            padding: 10px;
-            border: none;
             border-radius: 6px;
-            font-weight: bold;
-            font-size: 0.7rem;
-            cursor: pointer;
-            text-transform: uppercase;
+            margin-bottom: 10px;
+            position: relative;
+            border: 1px solid #333;
+            overflow: hidden;
         }
 
+        .preview-box {
+            position: absolute;
+            background: var(--accent);
+            opacity: 0.6;
+            border: 1px solid white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 7px;
+            color: white;
+            pointer-events: none;
+        }
+
+        #prev-launch { background: var(--accent); width: 40px; height: 20px; }
+        #prev-lt { background: var(--primary); width: 50px; height: 15px; }
+        #prev-topGroup { background: var(--green); width: 30px; height: 15px; }
+
+        .val-display { float: right; color: var(--accent); font-size: 0.7rem; }
+
+        /* Inputs compactos */
+        input[type="range"] { width: 100%; accent-color: var(--accent); margin: 5px 0; }
+        .switch { position: relative; display: inline-block; width: 40px; height: 20px; }
+        .switch input { opacity: 0; width: 0; height: 0; }
+        .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #333; transition: .4s; border-radius: 20px; }
+        .slider:before { position: absolute; content: ""; height: 14px; width: 14px; left: 3px; bottom: 3px; background-color: white; transition: .4s; border-radius: 50%; }
+        input:checked + .slider { background-color: var(--green); }
+        input:checked + .slider:before { transform: translateX(20px); }
+        
+        input[type="text"], input[type="color"], textarea, input[type="datetime-local"], select {
+            width: 100%; background: #0f111a; border: 1px solid #333; color: white; padding: 8px; border-radius: 6px; box-sizing: border-box; font-size: 0.8rem; margin-top: 4px;
+        }
+
+        .timer-controls { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 10px; }
+        .btn-timer { padding: 8px; border: none; border-radius: 5px; font-weight: bold; font-size: 0.65rem; cursor: pointer; text-transform: uppercase; }
         .btn-hold { background: var(--yellow); color: #000; }
         .btn-pause { background: #ff5252; color: white; }
         .btn-play { background: var(--green); color: #000; }
-        .btn-reset { background: #666; color: white; }
-
+        .btn-reset { background: #666; color: white; grid-column: span 2; }
+        .action-btn { width: 100%; margin-top: 10px; background: var(--primary); color: white; border: none; padding: 10px; border-radius: 6px; font-weight: bold; cursor: pointer; font-size: 0.75rem; }
     </style>
 </head>
 <body>
@@ -201,8 +141,7 @@
 <div class="dashboard">
     <div class="main-header">
         <div>
-            <h1>ELRIVERATV <span style="font-weight: 300; font-size: 0.9rem; color: white;">PRO BROADCAST</span></h1>
-            <div id="live-status"><span style="height:10px; width:10px; border-radius:50%; display:inline-block; margin-right:5px; background:var(--green);"></span> ONLINE</div>
+            <h1>ELRIVERATV PRO <small style="font-size: 0.8rem; color: white; font-weight: 300;">CONTROL</small></h1>
         </div>
         <div class="reference-clock">
             <span id="ref-time">00:00:00</span>
@@ -211,147 +150,77 @@
     </div>
 
     <div class="grid">
-        <div class="module-card">
-            <div class="module-header">
-                <span class="module-title">🔘 Marcador Superior</span>
-                <label class="switch">
-                    <input type="checkbox" id="checkLive" onchange="toggle('showLive', this.checked)">
-                    <span class="slider"></span>
-                </label>
+        <div class="module-card" style="grid-column: span 2;">
+            <span class="module-title">📐 Posicionamiento & Preview</span>
+            <div class="layout-preview">
+                <div id="prev-launch" class="preview-box">RELOJ</div>
+                <div id="prev-lt" class="preview-box">L.THIRD</div>
+                <div id="prev-topGroup" class="preview-box">TOP</div>
             </div>
-            <div class="control-row">
-                <span class="control-label">Mostrar Ubicación</span>
-                <label class="switch" style="transform: scale(0.8);">
-                    <input type="checkbox" id="checkLocation" onchange="toggle('showLocation', this.checked)">
-                    <span class="slider"></span>
-                </label>
-            </div>
-            <div class="input-group">
-                <label>UBICACIÓN DEL STREAM</label>
-                <input type="text" id="inputLoc" placeholder="Ej: Tepic, Nayarit" onkeyup="updateText('location', this.value)">
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                <select id="selectElement" onchange="updateLayoutEditor()">
+                    <option value="launch">Reloj Lanzamiento</option>
+                    <option value="lt">Lower Third</option>
+                    <option value="topGroup">Marcador Superior</option>
+                </select>
+                <div>
+                    <label style="font-size: 0.6rem;">ESCALA <span class="val-display" id="valScale">1.0</span></label>
+                    <input type="range" id="rangeScale" min="0.3" max="2.5" step="0.05" oninput="changeLayout('scale', this.value)">
+                </div>
+                <div>
+                    <label style="font-size: 0.6rem;">POS X <span class="val-display" id="valX">0%</span></label>
+                    <input type="range" id="rangeX" min="0" max="100" step="0.5" oninput="changeLayout('x', this.value)">
+                </div>
+                <div>
+                    <label style="font-size: 0.6rem;">POS Y <span class="val-display" id="valY">0%</span></label>
+                    <input type="range" id="rangeY" min="0" max="100" step="0.5" oninput="changeLayout('y', this.value)">
+                </div>
             </div>
         </div>
 
         <div class="module-card">
             <div class="module-header">
-                <span class="module-title">🚀 Reloj de Lanzamiento</span>
-                <label class="switch">
-                    <input type="checkbox" id="checkLaunch" onchange="toggle('showLaunchTimer', this.checked)">
-                    <span class="slider"></span>
-                </label>
+                <span class="module-title">🚀 Lanzamiento</span>
+                <label class="switch"><input type="checkbox" id="checkLaunch" onchange="toggle('showLaunchTimer', this.checked)"><span class="slider"></span></label>
             </div>
-            <div class="input-group">
-                <label>NOMBRE DE LA MISIÓN / EVENTO</label>
-                <input type="text" id="inputMissionName" placeholder="Ej: MISIÓN ELRIVERATV" onkeyup="updateText('missionName', this.value)">
-            </div>
-            <div class="input-group">
-                <label>ETIQUETA DEL RELOJ</label>
-                <input type="text" id="inputLaunchLabel" placeholder="Ej: TIEMPO DE LANZAMIENTO" onkeyup="updateText('launchLabelText', this.value)">
-            </div>
-            <div class="input-group">
-                <label>FECHA Y HORA OBJETIVO (T-0)</label>
-                <input type="datetime-local" id="inputLaunchTarget" onchange="updateText('launchTarget', this.value)">
-            </div>
-            
+            <input type="text" id="inputMissionName" placeholder="Misión" onkeyup="updateText('missionName', this.value)">
+            <input type="text" id="inputLaunchLabel" placeholder="Etiqueta" onkeyup="updateText('launchLabelText', this.value)">
+            <input type="datetime-local" id="inputLaunchTarget" onchange="updateText('launchTarget', this.value)">
             <div class="timer-controls">
                 <button class="btn-timer btn-hold" onclick="setTimerState('HOLD')">HOLD</button>
                 <button class="btn-timer btn-pause" id="btnPauseResume" onclick="togglePause()">PAUSAR</button>
                 <button class="btn-timer btn-reset" onclick="resetTimer()">RESET</button>
             </div>
-            <p id="timerStateLabel" style="font-size: 0.6rem; color: #aaa; margin-top: 10px; text-align: center;">ESTADO: NORMAL</p>
         </div>
 
         <div class="module-card">
             <div class="module-header">
-                <span class="module-title">🆔 Identidad de Marca</span>
-            </div>
-            <div class="control-row">
-                <span class="control-label">Logo ELRIVERATV</span>
-                <label class="switch"><input type="checkbox" id="checkBrand" onchange="toggle('showBrand', this.checked)"><span class="slider"></span></label>
-            </div>
-            <div class="control-row">
-                <span class="control-label">Fecha en Pantalla</span>
-                <label class="switch"><input type="checkbox" id="checkClock" onchange="toggle('showClock', this.checked)"><span class="slider"></span></label>
-            </div>
-            <div class="control-row">
-                <span class="control-label">Reloj (Bebas Neue)</span>
-                <label class="switch"><input type="checkbox" id="checkTime" onchange="toggle('showTime', this.checked)"><span class="slider"></span></label>
-            </div>
-            <div class="control-row">
-                <span class="control-label">Temperatura Actual</span>
-                <label class="switch"><input type="checkbox" id="checkTemp" onchange="toggle('showTemp', this.checked)"><span class="slider"></span></label>
-            </div>
-        </div>
-
-        <div class="module-card">
-            <div class="module-header">
-                <span class="module-title">👤 Lower Third (Invitado)</span>
+                <span class="module-title">👤 Invitado</span>
                 <label class="switch"><input type="checkbox" id="checkLT" onchange="toggle('showLowerThird', this.checked)"><span class="slider"></span></label>
             </div>
-            <div class="input-group">
-                <label>NOMBRE PRINCIPAL</label>
-                <input type="text" id="inputLTMain" onkeyup="updateText('ltMain', this.value)">
-            </div>
-            <div class="input-group">
-                <label>DESCRIPCIÓN / CARGO</label>
-                <input type="text" id="inputLTSub" onkeyup="updateText('ltSub', this.value)">
-            </div>
+            <input type="text" id="inputLTMain" placeholder="Nombre" onkeyup="updateText('ltMain', this.value)">
+            <input type="text" id="inputLTSub" placeholder="Cargo" onkeyup="updateText('ltSub', this.value)">
         </div>
 
         <div class="module-card">
             <div class="module-header">
-                <span class="module-title">🔳 Info Center Centrado</span>
-                <label class="switch">
-                    <input type="checkbox" id="checkInfoCenter" onchange="toggle('showInfoCenter', this.checked)">
-                    <span class="slider"></span>
-                </label>
+                <span class="module-title">🔘 Marcador</span>
+                <label class="switch"><input type="checkbox" id="checkLive" onchange="toggle('showLive', this.checked)"><span class="slider"></span></label>
             </div>
-            <div class="input-group">
-                <label>TÍTULO DEL CUADRO</label>
-                <input type="text" id="inputInfoTitle" placeholder="Ej: ¿Sabías que...?" onkeyup="updateText('infoTitle', this.value)">
-            </div>
-            <div class="input-group">
-                <label>CONTENIDO / INFORMACIÓN</label>
-                <textarea id="inputInfoBody" placeholder="Escribe la información aquí..." onkeyup="updateText('infoBody', this.value)"></textarea>
+            <input type="text" id="inputLoc" placeholder="Ubicación" onkeyup="updateText('location', this.value)">
+            <div style="display:flex; justify-content:space-between; margin-top:8px; font-size:0.7rem;">
+                <span>Ver Ciudad</span>
+                <label class="switch" style="transform: scale(0.7);"><input type="checkbox" id="checkLocation" onchange="toggle('showLocation', this.checked)"><span class="slider"></span></label>
             </div>
         </div>
 
         <div class="module-card">
-            <div class="module-header">
-                <span class="module-title">🎨 Colores de Interfaz</span>
+            <span class="module-title">🎨 Estilo</span>
+            <div style="display:flex; gap:10px;">
+                <input type="color" id="colorPrimary" onchange="updateText('colorPrimary', this.value)">
+                <input type="color" id="colorAccent" onchange="updateText('colorAccent', this.value)">
             </div>
-            <div class="color-grid">
-                <div class="input-group">
-                    <label>PRIMARIO</label>
-                    <input type="color" id="colorPrimary" onchange="updateText('colorPrimary', this.value)">
-                </div>
-                <div class="input-group">
-                    <label>ACENTO</label>
-                    <input type="color" id="colorAccent" onchange="updateText('colorAccent', this.value)">
-                </div>
-                <div class="input-group">
-                    <label>RESALTADO</label>
-                    <input type="color" id="colorHighlight" onchange="updateText('colorHighlight', this.value)">
-                </div>
-            </div>
-        </div>
-
-        <div class="module-card">
-            <div class="module-header">
-                <span class="module-title">🎞️ Marquesina de Noticias</span>
-                <label class="switch"><input type="checkbox" id="checkWeather" onchange="toggle('showWeather', this.checked)"><span class="slider"></span></label>
-            </div>
-            <div class="input-group">
-                <label>TEXTO DEL TICKER (DINÁMICO)</label>
-                <textarea id="inputNews" placeholder="Ingresa aquí las noticias o anuncios largos..." onkeyup="updateText('weatherText', this.value)"></textarea>
-            </div>
-        </div>
-
-        <div class="module-card">
-            <div class="module-header">
-                <span class="module-title">⚙️ Sistema</span>
-            </div>
-            <button class="action-btn" style="background: #333;" onclick="if(confirm('¿Reiniciar todos los valores?')) { db.remove(); location.reload(); }">Resetear Panel</button>
+            <button class="action-btn" style="background: #333;" onclick="if(confirm('¿Resetear?')) db.remove();">Limpiar Todo</button>
         </div>
     </div>
 </div>
@@ -364,115 +233,79 @@
     firebase.initializeApp(firebaseConfig);
     const db = firebase.database().ref('overlayData');
 
-    let currentTimerState = "RUNNING";
-    let pausedTime = 0;
-
     function updateRefClock() {
         const now = new Date();
         document.getElementById('ref-time').innerText = now.toLocaleTimeString('es-MX', { hour12: false });
         document.getElementById('ref-date').innerText = now.toLocaleDateString('es-MX', { weekday: 'long', day: 'numeric', month: 'long' });
     }
-    setInterval(updateRefClock, 1000);
-    updateRefClock();
+    setInterval(updateRefClock, 1000); updateRefClock();
 
-    function toggle(key, isChecked) {
-        db.update({ [key]: isChecked ? 'true' : 'false' });
+    function toggle(key, isChecked) { db.update({ [key]: isChecked ? 'true' : 'false' }); }
+    function updateText(key, value) { db.update({ [key]: value }); }
+
+    function changeLayout(prop, val) {
+        const el = document.getElementById('selectElement').value;
+        db.child('layout').child(el).update({ [prop]: parseFloat(val) });
     }
 
-    function updateText(key, value) {
-        db.update({ [key]: value });
+    function updateLayoutEditor() {
+        const el = document.getElementById('selectElement').value;
+        db.child('layout').child(el).once('value', (s) => {
+            const d = s.val() || { x: 10, y: 10, scale: 1.0 };
+            document.getElementById('rangeX').value = d.x;
+            document.getElementById('rangeY').value = d.y;
+            document.getElementById('rangeScale').value = d.scale;
+            document.getElementById('valX').innerText = d.x + '%';
+            document.getElementById('valY').innerText = d.y + '%';
+            document.getElementById('valScale').innerText = d.scale.toFixed(2);
+        });
     }
 
-    function setTimerState(state) {
-        db.update({ timerState: state });
-    }
-
+    function setTimerState(state) { db.update({ timerState: state }); }
     function togglePause() {
-        const newState = currentTimerState === "PAUSED" ? "RUNNING" : "PAUSED";
-        if (newState === "PAUSED") {
-            db.update({ 
-                timerState: "PAUSED",
-                pauseTimestamp: new Date().getTime()
-            });
-        } else {
-            const now = new Date().getTime();
-            const pauseStart = pausedTime;
-            const offset = now - pauseStart;
-            db.once('value', (snap) => {
-                const data = snap.val();
-                const oldTarget = new Date(data.launchTarget).getTime();
-                const newTarget = new Date(oldTarget + offset).toISOString();
-                db.update({ 
-                    timerState: "RUNNING",
-                    launchTarget: newTarget
-                });
-            });
-        }
+        db.once('value', (s) => {
+            const d = s.val() || {};
+            if (d.timerState !== "PAUSED") {
+                db.update({ timerState: "PAUSED", pauseTimestamp: new Date().getTime() });
+            } else {
+                const now = new Date().getTime();
+                const offset = now - (d.pauseTimestamp || now);
+                const oldTarget = new Date(d.launchTarget).getTime();
+                db.update({ timerState: "RUNNING", launchTarget: new Date(oldTarget + offset).toISOString() });
+            }
+        });
     }
-
-    function resetTimer() {
-        if(confirm("¿Reiniciar reloj de lanzamiento?")) {
-            db.update({ 
-                timerState: "RUNNING",
-                launchTarget: "",
-                missionName: "",
-                launchLabelText: ""
-            });
-            document.getElementById('inputLaunchTarget').value = "";
-            document.getElementById('inputMissionName').value = "";
-            document.getElementById('inputLaunchLabel').value = "";
-        }
-    }
+    function resetTimer() { if(confirm("¿Reset Reloj?")) db.update({ timerState: "RUNNING", launchTarget: "", missionName: "", launchLabelText: "" }); }
 
     db.on('value', (snapshot) => {
         const data = snapshot.val() || {};
-        
+        document.getElementById('checkLaunch').checked = data.showLaunchTimer === 'true';
+        document.getElementById('checkLT').checked = data.showLowerThird === 'true';
         document.getElementById('checkLive').checked = data.showLive !== 'false';
         document.getElementById('checkLocation').checked = data.showLocation !== 'false';
-        document.getElementById('checkBrand').checked = data.showBrand !== 'false';
-        document.getElementById('checkClock').checked = data.showClock !== 'false';
-        document.getElementById('checkTime').checked = data.showTime !== 'false';
-        document.getElementById('checkTemp').checked = data.showTemp !== 'false';
-        document.getElementById('checkLT').checked = data.showLowerThird === 'true';
-        document.getElementById('checkWeather').checked = data.showWeather !== 'false';
-        document.getElementById('checkInfoCenter').checked = data.showInfoCenter === 'true';
-        document.getElementById('checkLaunch').checked = data.showLaunchTimer === 'true';
-        
-        document.getElementById('inputLoc').value = data.location || "";
-        document.getElementById('inputNews').value = data.weatherText || "";
-        document.getElementById('inputLTMain').value = data.ltMain || "";
-        document.getElementById('inputLTSub').value = data.ltSub || "";
-        document.getElementById('inputInfoTitle').value = data.infoTitle || "";
-        document.getElementById('inputInfoBody').value = data.infoBody || "";
-        document.getElementById('inputLaunchTarget').value = data.launchTarget || "";
         document.getElementById('inputMissionName').value = data.missionName || "";
-        document.getElementById('inputLaunchLabel').value = data.launchLabelText || "";
-
-        currentTimerState = data.timerState || "RUNNING";
-        pausedTime = data.pauseTimestamp || 0;
+        document.getElementById('inputLTMain').value = data.ltMain || "";
+        document.getElementById('inputLoc').value = data.location || "";
         
         const btnP = document.getElementById('btnPauseResume');
-        const stateLbl = document.getElementById('timerStateLabel');
-        
-        if(currentTimerState === "PAUSED") {
-            btnP.innerText = "REANUDAR";
-            btnP.className = "btn-timer btn-play";
-            stateLbl.innerText = "ESTADO: PAUSADO";
-        } else if (currentTimerState === "HOLD") {
-            btnP.innerText = "PAUSAR";
-            btnP.className = "btn-timer btn-pause";
-            stateLbl.innerText = "ESTADO: EN ESPERA (HOLD)";
+        if(data.timerState === "PAUSED") {
+            btnP.innerText = "REANUDAR"; btnP.className = "btn-timer btn-play";
         } else {
-            btnP.innerText = "PAUSAR";
-            btnP.className = "btn-timer btn-pause";
-            stateLbl.innerText = "ESTADO: CORRIENDO";
+            btnP.innerText = "PAUSAR"; btnP.className = "btn-timer btn-pause";
         }
 
-        document.getElementById('colorPrimary').value = data.colorPrimary || "#4A148C";
-        document.getElementById('colorAccent').value = data.colorAccent || "#E91E63";
-        document.getElementById('colorHighlight').value = data.colorHighlight || "#00E5FF";
+        if(data.layout) {
+            Object.keys(data.layout).forEach(key => {
+                const pEl = document.getElementById('prev-' + key);
+                if(pEl) {
+                    const l = data.layout[key];
+                    pEl.style.left = l.x + "%"; pEl.style.top = l.y + "%";
+                    pEl.style.transform = `scale(${l.scale})`;
+                }
+            });
+        }
     });
+    updateLayoutEditor();
 </script>
-
 </body>
 </html>
