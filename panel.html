@@ -124,7 +124,7 @@
             font-weight: bold;
         }
 
-        input[type="text"], input[type="color"], textarea {
+        input[type="text"], input[type="color"], textarea, input[type="datetime-local"] {
             width: 100%;
             background: #0f111a;
             border: 1px solid #333;
@@ -136,7 +136,6 @@
         }
 
         textarea { height: 70px; resize: vertical; }
-        /* Estilo específico para el textarea del ticker */
         #inputNews { height: 100px; font-size: 0.9rem; line-height: 1.4; border-color: var(--primary); }
 
         input[type="color"] {
@@ -177,7 +176,6 @@
         }
 
         .control-label { font-size: 0.85rem; font-weight: 600; }
-
     </style>
 </head>
 <body>
@@ -235,6 +233,21 @@
             <div class="control-row">
                 <span class="control-label">Temperatura Actual</span>
                 <label class="switch"><input type="checkbox" id="checkTemp" onchange="toggle('showTemp', this.checked)"><span class="slider"></span></label>
+            </div>
+        </div>
+
+        <div class="module-card">
+            <div class="module-header">
+                <span class="module-title">🚀 Reloj de Lanzamiento</span>
+                <label class="switch">
+                    <input type="checkbox" id="checkLaunch" onchange="toggle('showLaunchTimer', this.checked)">
+                    <span class="slider"></span>
+                </label>
+            </div>
+            <div class="input-group">
+                <label>FECHA Y HORA OBJETIVO (T-0)</label>
+                <input type="datetime-local" id="inputLaunchTarget" onchange="updateText('launchTarget', this.value)">
+                <p style="font-size: 0.6rem; color: #666; margin-top: 8px;">* Al llegar a 0, el reloj seguirá contando el tiempo transcurrido (T+).</p>
             </div>
         </div>
 
@@ -347,6 +360,7 @@
         document.getElementById('checkLT').checked = data.showLowerThird === 'true';
         document.getElementById('checkWeather').checked = data.showWeather !== 'false';
         document.getElementById('checkInfoCenter').checked = data.showInfoCenter === 'true';
+        document.getElementById('checkLaunch').checked = data.showLaunchTimer === 'true';
         
         document.getElementById('inputLoc').value = data.location || "";
         document.getElementById('inputNews').value = data.weatherText || "";
@@ -354,6 +368,7 @@
         document.getElementById('inputLTSub').value = data.ltSub || "";
         document.getElementById('inputInfoTitle').value = data.infoTitle || "";
         document.getElementById('inputInfoBody').value = data.infoBody || "";
+        document.getElementById('inputLaunchTarget').value = data.launchTarget || "";
 
         document.getElementById('colorPrimary').value = data.colorPrimary || "#4A148C";
         document.getElementById('colorAccent').value = data.colorAccent || "#E91E63";
