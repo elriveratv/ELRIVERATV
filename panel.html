@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <title>Master Control - elriveratv</title>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&family=Oswald:wght@500&family=Bebas+Neue&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&family=Oswald:wght@500&display=swap');
 
         :root {
             --bg: #0f111a;
@@ -12,7 +12,6 @@
             --primary: #4A148C;
             --accent: #E91E63;
             --green: #00e676;
-            --yellow: #ffd600;
             --text: #ffffff;
         }
 
@@ -21,13 +20,13 @@
             color: var(--text);
             font-family: 'Montserrat', sans-serif;
             margin: 0;
-            padding: 15px;
+            padding: 20px;
             display: flex;
             justify-content: center;
         }
 
         .dashboard {
-            max-width: 1200px; /* Aumentado para permitir más columnas */
+            max-width: 900px;
             width: 100%;
         }
 
@@ -36,191 +35,234 @@
             justify-content: space-between;
             align-items: center;
             border-bottom: 2px solid var(--primary);
-            padding-bottom: 10px;
-            margin-bottom: 20px;
+            padding-bottom: 15px;
+            margin-bottom: 30px;
         }
 
         .main-header h1 {
             font-family: 'Oswald', sans-serif;
             margin: 0;
-            letter-spacing: 1px;
+            letter-spacing: 2px;
             color: var(--accent);
-            font-size: 1.5rem;
         }
 
-        .reference-clock { text-align: right; font-family: 'Oswald', sans-serif; }
-        #ref-time { font-size: 1.2rem; color: var(--text); display: block; line-height: 1; }
-        #ref-date { font-size: 0.65rem; color: #aaa; text-transform: uppercase; display: block; }
+        .reference-clock {
+            text-align: right;
+            font-family: 'Oswald', sans-serif;
+        }
+        #ref-time { font-size: 1.4rem; color: var(--text); display: block; line-height: 1; }
+        #ref-date { font-size: 0.75rem; color: #aaa; text-transform: uppercase; margin-top: 5px; display: block; }
 
-        /* GRID OPTIMIZADO PARA MÁS COLUMNAS */
         .grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); /* Columnas más estrechas */
-            gap: 15px;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 25px;
         }
 
         .module-card {
             background: var(--card);
-            border-radius: 12px;
-            padding: 15px;
-            box-shadow: 0 8px 16px rgba(0,0,0,0.4);
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.4);
             border: 1px solid rgba(255,255,255,0.05);
-            height: fit-content;
         }
 
         .module-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 12px;
+            margin-bottom: 20px;
         }
 
         .module-title {
             font-weight: 700;
-            font-size: 0.7rem;
+            font-size: 0.8rem;
             text-transform: uppercase;
             letter-spacing: 1px;
             color: #aaa;
         }
 
-        /* Preview Layout */
-        .layout-preview {
-            background: #000;
-            aspect-ratio: 16/9;
-            width: 100%;
-            border-radius: 6px;
-            margin-bottom: 10px;
+        .switch {
             position: relative;
-            border: 1px solid #333;
-            overflow: hidden;
+            display: inline-block;
+            width: 50px;
+            height: 26px;
         }
 
-        .preview-box {
-            position: absolute;
-            background: var(--accent);
-            opacity: 0.6;
-            border: 1px solid white;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 7px;
-            color: white;
-            pointer-events: none;
-        }
-
-        #prev-launch { background: var(--accent); width: 40px; height: 20px; }
-        #prev-lt { background: var(--primary); width: 50px; height: 15px; }
-        #prev-topGroup { background: var(--green); width: 30px; height: 15px; }
-
-        .val-display { float: right; color: var(--accent); font-size: 0.7rem; }
-
-        /* Inputs compactos */
-        input[type="range"] { width: 100%; accent-color: var(--accent); margin: 5px 0; }
-        .switch { position: relative; display: inline-block; width: 40px; height: 20px; }
         .switch input { opacity: 0; width: 0; height: 0; }
-        .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #333; transition: .4s; border-radius: 20px; }
-        .slider:before { position: absolute; content: ""; height: 14px; width: 14px; left: 3px; bottom: 3px; background-color: white; transition: .4s; border-radius: 50%; }
-        input:checked + .slider { background-color: var(--green); }
-        input:checked + .slider:before { transform: translateX(20px); }
-        
-        input[type="text"], input[type="color"], textarea, input[type="datetime-local"], select {
-            width: 100%; background: #0f111a; border: 1px solid #333; color: white; padding: 8px; border-radius: 6px; box-sizing: border-box; font-size: 0.8rem; margin-top: 4px;
+
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background-color: #333;
+            transition: .4s;
+            border-radius: 34px;
         }
 
-        .timer-controls { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 10px; }
-        .btn-timer { padding: 8px; border: none; border-radius: 5px; font-weight: bold; font-size: 0.65rem; cursor: pointer; text-transform: uppercase; }
-        .btn-hold { background: var(--yellow); color: #000; }
-        .btn-pause { background: #ff5252; color: white; }
-        .btn-play { background: var(--green); color: #000; }
-        .btn-reset { background: #666; color: white; grid-column: span 2; }
-        .action-btn { width: 100%; margin-top: 10px; background: var(--primary); color: white; border: none; padding: 10px; border-radius: 6px; font-weight: bold; cursor: pointer; font-size: 0.75rem; }
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 18px; width: 18px;
+            left: 4px; bottom: 4px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+        }
+
+        input:checked + .slider { background-color: var(--green); }
+        input:checked + .slider:before { transform: translateX(24px); }
+
+        .input-group { margin-top: 15px; }
+
+        label {
+            display: block;
+            font-size: 0.7rem;
+            margin-bottom: 5px;
+            color: var(--accent);
+            font-weight: bold;
+        }
+
+        input[type="text"], input[type="color"], textarea {
+            width: 100%;
+            background: #0f111a;
+            border: 1px solid #333;
+            color: white;
+            padding: 10px;
+            border-radius: 8px;
+            box-sizing: border-box;
+        }
+
+        textarea { height: 60px; resize: none; }
+
+        .control-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: rgba(0,0,0,0.2);
+            padding: 12px;
+            margin-bottom: 10px;
+            border-radius: 8px;
+        }
+
+        .control-label { font-size: 0.85rem; font-weight: 600; }
+
+        .action-btn {
+            width: 100%;
+            margin-top: 15px;
+            background: #333;
+            color: white;
+            border: none;
+            padding: 12px;
+            border-radius: 8px;
+            font-weight: bold;
+            cursor: pointer;
+        }
     </style>
 </head>
 <body>
 
 <div class="dashboard">
     <div class="main-header">
-        <div>
-            <h1>ELRIVERATV PRO <small style="font-size: 0.8rem; color: white; font-weight: 300;">CONTROL</small></h1>
-        </div>
+        <h1>ELRIVERATV <span style="font-weight: 300; font-size: 0.9rem; color: white;">MASTER CONTROL</span></h1>
         <div class="reference-clock">
             <span id="ref-time">00:00:00</span>
-            <span id="ref-date">CARGANDO...</span>
+            <span id="ref-date">FECHA</span>
         </div>
     </div>
 
     <div class="grid">
-        <div class="module-card" style="grid-column: span 2;">
-            <span class="module-title">📐 Posicionamiento & Preview</span>
-            <div class="layout-preview">
-                <div id="prev-launch" class="preview-box">RELOJ</div>
-                <div id="prev-lt" class="preview-box">L.THIRD</div>
-                <div id="prev-topGroup" class="preview-box">TOP</div>
+        <div class="module-card">
+            <div class="module-header">
+                <span class="module-title">🔘 Marcador Superior</span>
+                <label class="switch">
+                    <input type="checkbox" id="checkLive" onchange="updateFirebase('showLive', this.checked)">
+                    <span class="slider"></span>
+                </label>
             </div>
+            <div class="control-row">
+                <span class="control-label">Ubicación</span>
+                <label class="switch">
+                    <input type="checkbox" id="checkLocation" onchange="updateFirebase('showLocation', this.checked)">
+                    <span class="slider"></span>
+                </label>
+            </div>
+            <div class="input-group">
+                <label>CIUDAD / PAÍS</label>
+                <input type="text" id="inputLoc" onkeyup="updateFirebase('location', this.value)">
+            </div>
+        </div>
+
+        <div class="module-card">
+            <div class="module-header"><span class="module-title">🆔 Identidad</span></div>
+            <div class="control-row">
+                <span class="control-label">Logo / Brand</span>
+                <label class="switch"><input type="checkbox" id="checkBrand" onchange="updateFirebase('showBrand', this.checked)"><span class="slider"></span></label>
+            </div>
+            <div class="control-row">
+                <span class="control-label">Reloj Digital</span>
+                <label class="switch"><input type="checkbox" id="checkTime" onchange="updateFirebase('showTime', this.checked)"><span class="slider"></span></label>
+            </div>
+            <div class="control-row">
+                <span class="control-label">Fecha Larga</span>
+                <label class="switch"><input type="checkbox" id="checkClock" onchange="updateFirebase('showClock', this.checked)"><span class="slider"></span></label>
+            </div>
+        </div>
+
+        <div class="module-card">
+            <div class="module-header">
+                <span class="module-title">👤 Invitado (Lower Third)</span>
+                <label class="switch"><input type="checkbox" id="checkLT" onchange="updateFirebase('showLowerThird', this.checked)"><span class="slider"></span></label>
+            </div>
+            <div class="input-group">
+                <label>NOMBRE</label>
+                <input type="text" id="inputLTMain" onkeyup="updateFirebase('ltMain', this.value)">
+            </div>
+            <div class="input-group">
+                <label>CARGO / REDES</label>
+                <input type="text" id="inputLTSub" onkeyup="updateFirebase('ltSub', this.value)">
+            </div>
+        </div>
+
+        <div class="module-card">
+            <div class="module-header">
+                <span class="module-title">🔳 Info Center</span>
+                <label class="switch"><input type="checkbox" id="checkInfoCenter" onchange="updateFirebase('showInfoCenter', this.checked)"><span class="slider"></span></label>
+            </div>
+            <div class="input-group">
+                <label>TÍTULO</label>
+                <input type="text" id="inputInfoTitle" onkeyup="updateFirebase('infoTitle', this.value)">
+            </div>
+            <div class="input-group">
+                <label>CONTENIDO</label>
+                <textarea id="inputInfoBody" onkeyup="updateFirebase('infoBody', this.value)"></textarea>
+            </div>
+        </div>
+
+        <div class="module-card">
+            <div class="module-header"><span class="module-title">🎨 Colores</span></div>
             <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
-                <select id="selectElement" onchange="updateLayoutEditor()">
-                    <option value="launch">Reloj Lanzamiento</option>
-                    <option value="lt">Lower Third</option>
-                    <option value="topGroup">Marcador Superior</option>
-                </select>
                 <div>
-                    <label style="font-size: 0.6rem;">ESCALA <span class="val-display" id="valScale">1.0</span></label>
-                    <input type="range" id="rangeScale" min="0.3" max="2.5" step="0.05" oninput="changeLayout('scale', this.value)">
+                    <label>PRIMARIO</label>
+                    <input type="color" id="colorPrimary" onchange="updateFirebase('colorPrimary', this.value)">
                 </div>
                 <div>
-                    <label style="font-size: 0.6rem;">POS X <span class="val-display" id="valX">0%</span></label>
-                    <input type="range" id="rangeX" min="0" max="100" step="0.5" oninput="changeLayout('x', this.value)">
-                </div>
-                <div>
-                    <label style="font-size: 0.6rem;">POS Y <span class="val-display" id="valY">0%</span></label>
-                    <input type="range" id="rangeY" min="0" max="100" step="0.5" oninput="changeLayout('y', this.value)">
+                    <label>ACENTO</label>
+                    <input type="color" id="colorAccent" onchange="updateFirebase('colorAccent', this.value)">
                 </div>
             </div>
         </div>
 
         <div class="module-card">
             <div class="module-header">
-                <span class="module-title">🚀 Lanzamiento</span>
-                <label class="switch"><input type="checkbox" id="checkLaunch" onchange="toggle('showLaunchTimer', this.checked)"><span class="slider"></span></label>
+                <span class="module-title">🎞️ Ticker (Noticias)</span>
+                <label class="switch"><input type="checkbox" id="checkWeather" onchange="updateFirebase('showWeather', this.checked)"><span class="slider"></span></label>
             </div>
-            <input type="text" id="inputMissionName" placeholder="Misión" onkeyup="updateText('missionName', this.value)">
-            <input type="text" id="inputLaunchLabel" placeholder="Etiqueta" onkeyup="updateText('launchLabelText', this.value)">
-            <input type="datetime-local" id="inputLaunchTarget" onchange="updateText('launchTarget', this.value)">
-            <div class="timer-controls">
-                <button class="btn-timer btn-hold" onclick="setTimerState('HOLD')">HOLD</button>
-                <button class="btn-timer btn-pause" id="btnPauseResume" onclick="togglePause()">PAUSAR</button>
-                <button class="btn-timer btn-reset" onclick="resetTimer()">RESET</button>
+            <div class="input-group">
+                <label>TEXTO CORREDIZO</label>
+                <input type="text" id="inputNews" onkeyup="updateFirebase('weatherText', this.value)">
             </div>
-        </div>
-
-        <div class="module-card">
-            <div class="module-header">
-                <span class="module-title">👤 Invitado</span>
-                <label class="switch"><input type="checkbox" id="checkLT" onchange="toggle('showLowerThird', this.checked)"><span class="slider"></span></label>
-            </div>
-            <input type="text" id="inputLTMain" placeholder="Nombre" onkeyup="updateText('ltMain', this.value)">
-            <input type="text" id="inputLTSub" placeholder="Cargo" onkeyup="updateText('ltSub', this.value)">
-        </div>
-
-        <div class="module-card">
-            <div class="module-header">
-                <span class="module-title">🔘 Marcador</span>
-                <label class="switch"><input type="checkbox" id="checkLive" onchange="toggle('showLive', this.checked)"><span class="slider"></span></label>
-            </div>
-            <input type="text" id="inputLoc" placeholder="Ubicación" onkeyup="updateText('location', this.value)">
-            <div style="display:flex; justify-content:space-between; margin-top:8px; font-size:0.7rem;">
-                <span>Ver Ciudad</span>
-                <label class="switch" style="transform: scale(0.7);"><input type="checkbox" id="checkLocation" onchange="toggle('showLocation', this.checked)"><span class="slider"></span></label>
-            </div>
-        </div>
-
-        <div class="module-card">
-            <span class="module-title">🎨 Estilo</span>
-            <div style="display:flex; gap:10px;">
-                <input type="color" id="colorPrimary" onchange="updateText('colorPrimary', this.value)">
-                <input type="color" id="colorAccent" onchange="updateText('colorAccent', this.value)">
-            </div>
-            <button class="action-btn" style="background: #333;" onclick="if(confirm('¿Resetear?')) db.remove();">Limpiar Todo</button>
+            <button class="action-btn" onclick="if(confirm('¿Reiniciar todo?')) db.set({});">Resetear Sistema</button>
         </div>
     </div>
 </div>
@@ -229,83 +271,44 @@
 <script src="https://www.gstatic.com/firebasejs/9.17.1/firebase-database-compat.js"></script>
 
 <script>
-    const firebaseConfig = { databaseURL: "https://elriveratv-28c69-default-rtdb.firebaseio.com/" };
+    const firebaseConfig = { databaseURL: "TU_URL_DE_FIREBASE_AQUI" };
     firebase.initializeApp(firebaseConfig);
     const db = firebase.database().ref('overlayData');
 
-    function updateRefClock() {
+    function updateFirebase(key, value) {
+        let val = value;
+        if(typeof value === 'boolean') val = value ? 'true' : 'false';
+        db.update({ [key]: val });
+    }
+
+    // Sincronizar el panel con los datos actuales de Firebase
+    db.on('value', (snapshot) => {
+        const data = snapshot.val() || {};
+        
+        document.getElementById('checkLive').checked = data.showLive !== 'false';
+        document.getElementById('checkLocation').checked = data.showLocation !== 'false';
+        document.getElementById('checkBrand').checked = data.showBrand !== 'false';
+        document.getElementById('checkTime').checked = data.showTime !== 'false';
+        document.getElementById('checkClock').checked = data.showClock !== 'false';
+        document.getElementById('checkLT').checked = data.showLowerThird === 'true';
+        document.getElementById('checkInfoCenter').checked = data.showInfoCenter === 'true';
+        document.getElementById('checkWeather').checked = data.showWeather !== 'false';
+
+        document.getElementById('inputLoc').value = data.location || "";
+        document.getElementById('inputLTMain').value = data.ltMain || "";
+        document.getElementById('inputLTSub').value = data.ltSub || "";
+        document.getElementById('inputInfoTitle').value = data.infoTitle || "";
+        document.getElementById('inputInfoBody').value = data.infoBody || "";
+        document.getElementById('inputNews').value = data.weatherText || "";
+        document.getElementById('colorPrimary').value = data.colorPrimary || "#4A148C";
+        document.getElementById('colorAccent').value = data.colorAccent || "#E91E63";
+    });
+
+    setInterval(() => {
         const now = new Date();
         document.getElementById('ref-time').innerText = now.toLocaleTimeString('es-MX', { hour12: false });
         document.getElementById('ref-date').innerText = now.toLocaleDateString('es-MX', { weekday: 'long', day: 'numeric', month: 'long' });
-    }
-    setInterval(updateRefClock, 1000); updateRefClock();
-
-    function toggle(key, isChecked) { db.update({ [key]: isChecked ? 'true' : 'false' }); }
-    function updateText(key, value) { db.update({ [key]: value }); }
-
-    function changeLayout(prop, val) {
-        const el = document.getElementById('selectElement').value;
-        db.child('layout').child(el).update({ [prop]: parseFloat(val) });
-    }
-
-    function updateLayoutEditor() {
-        const el = document.getElementById('selectElement').value;
-        db.child('layout').child(el).once('value', (s) => {
-            const d = s.val() || { x: 10, y: 10, scale: 1.0 };
-            document.getElementById('rangeX').value = d.x;
-            document.getElementById('rangeY').value = d.y;
-            document.getElementById('rangeScale').value = d.scale;
-            document.getElementById('valX').innerText = d.x + '%';
-            document.getElementById('valY').innerText = d.y + '%';
-            document.getElementById('valScale').innerText = d.scale.toFixed(2);
-        });
-    }
-
-    function setTimerState(state) { db.update({ timerState: state }); }
-    function togglePause() {
-        db.once('value', (s) => {
-            const d = s.val() || {};
-            if (d.timerState !== "PAUSED") {
-                db.update({ timerState: "PAUSED", pauseTimestamp: new Date().getTime() });
-            } else {
-                const now = new Date().getTime();
-                const offset = now - (d.pauseTimestamp || now);
-                const oldTarget = new Date(d.launchTarget).getTime();
-                db.update({ timerState: "RUNNING", launchTarget: new Date(oldTarget + offset).toISOString() });
-            }
-        });
-    }
-    function resetTimer() { if(confirm("¿Reset Reloj?")) db.update({ timerState: "RUNNING", launchTarget: "", missionName: "", launchLabelText: "" }); }
-
-    db.on('value', (snapshot) => {
-        const data = snapshot.val() || {};
-        document.getElementById('checkLaunch').checked = data.showLaunchTimer === 'true';
-        document.getElementById('checkLT').checked = data.showLowerThird === 'true';
-        document.getElementById('checkLive').checked = data.showLive !== 'false';
-        document.getElementById('checkLocation').checked = data.showLocation !== 'false';
-        document.getElementById('inputMissionName').value = data.missionName || "";
-        document.getElementById('inputLTMain').value = data.ltMain || "";
-        document.getElementById('inputLoc').value = data.location || "";
-        
-        const btnP = document.getElementById('btnPauseResume');
-        if(data.timerState === "PAUSED") {
-            btnP.innerText = "REANUDAR"; btnP.className = "btn-timer btn-play";
-        } else {
-            btnP.innerText = "PAUSAR"; btnP.className = "btn-timer btn-pause";
-        }
-
-        if(data.layout) {
-            Object.keys(data.layout).forEach(key => {
-                const pEl = document.getElementById('prev-' + key);
-                if(pEl) {
-                    const l = data.layout[key];
-                    pEl.style.left = l.x + "%"; pEl.style.top = l.y + "%";
-                    pEl.style.transform = `scale(${l.scale})`;
-                }
-            });
-        }
-    });
-    updateLayoutEditor();
+    }, 1000);
 </script>
 </body>
 </html>
