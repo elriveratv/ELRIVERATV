@@ -2,122 +2,140 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>Master Control - elriveratv</title>
+    <title>Broadcast Switcher - elriveratv</title>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&family=Oswald:wght@500&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&family=Oswald:wght@500;700&display=swap');
 
         :root {
-            --bg: #0f111a;
-            --card: #1c1f2b;
+            --bg: #0b0d14;
+            --card: #161925;
             --primary: #4A148C;
             --accent: #E91E63;
-            --green: #00e676;
+            --green: #00ff88;
             --text: #ffffff;
+            --panel-border: #2d3142;
         }
 
-        body { background-color: var(--bg); color: var(--text); font-family: 'Montserrat', sans-serif; margin: 0; padding: 20px; display: flex; justify-content: center; }
-        .dashboard { max-width: 900px; width: 100%; }
-        .main-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid var(--primary); padding-bottom: 15px; margin-bottom: 30px; }
+        body { background-color: var(--bg); color: var(--text); font-family: 'Montserrat', sans-serif; margin: 0; padding: 20px; }
+        .dashboard { max-width: 1000px; margin: 0 auto; }
+        
+        .main-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 3px solid var(--primary); padding-bottom: 10px; margin-bottom: 20px; }
         .main-header h1 { font-family: 'Oswald', sans-serif; margin: 0; letter-spacing: 2px; color: var(--accent); }
         
+        /* Reloj y Fecha */
         .reference-clock { text-align: right; font-family: 'Oswald', sans-serif; }
-        #ref-time { font-size: 1.4rem; color: var(--text); display: block; line-height: 1; }
-        #ref-date { font-size: 0.75rem; color: #aaa; text-transform: uppercase; margin-top: 5px; display: block; }
+        #ref-time { font-size: 1.6rem; color: #fff; line-height: 1; }
+        #ref-date { font-size: 0.8rem; color: #888; text-transform: uppercase; margin-top: 4px; display: block; font-family: 'Montserrat', sans-serif; }
 
-        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 25px; }
-        .module-card { background: var(--card); border-radius: 15px; padding: 20px; box-shadow: 0 10px 20px rgba(0,0,0,0.4); border: 1px solid rgba(255,255,255,0.05); }
-        .module-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
-        .module-title { font-weight: 700; font-size: 0.8rem; text-transform: uppercase; letter-spacing: 1px; color: #aaa; }
+        /* --- SECCIÓN SWITCHER (BOTONES CUADRADOS) --- */
+        .switcher-grid { 
+            display: grid; 
+            grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); 
+            gap: 15px; 
+            background: #11141f; 
+            padding: 25px; 
+            border-radius: 12px; 
+            border: 2px solid var(--panel-border);
+            margin-bottom: 30px;
+            box-shadow: inset 0 0 30px rgba(0,0,0,0.7);
+        }
 
-        .switch { position: relative; display: inline-block; width: 50px; height: 26px; }
-        .switch input { opacity: 0; width: 0; height: 0; }
-        .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #333; transition: .4s; border-radius: 34px; }
-        .slider:before { position: absolute; content: ""; height: 18px; width: 18px; left: 4px; bottom: 4px; background-color: white; transition: .4s; border-radius: 50%; }
-        input:checked + .slider { background-color: var(--green); }
-        input:checked + .slider:before { transform: translateX(24px); }
+        .sw-unit { display: flex; flex-direction: column; align-items: center; gap: 12px; }
+        .sw-label { font-size: 0.6rem; font-weight: 700; text-transform: uppercase; color: #666; text-align: center; letter-spacing: 1px; }
 
-        label { display: block; font-size: 0.7rem; margin-bottom: 5px; color: var(--accent); font-weight: bold; margin-top: 15px; }
-        input[type="text"], input[type="color"], textarea { width: 100%; background: #0f111a; border: 1px solid #333; color: white; padding: 10px; border-radius: 8px; box-sizing: border-box; }
+        .sw-btn {
+            width: 80px; height: 80px;
+            background: linear-gradient(145deg, #333847, #1a1d26);
+            border: 3px solid #111;
+            border-radius: 10px;
+            cursor: pointer;
+            position: relative;
+            display: flex; align-items: center; justify-content: center;
+            transition: all 0.2s;
+            box-shadow: 4px 4px 10px rgba(0,0,0,0.5), inset 1px 1px 2px rgba(255,255,255,0.1);
+        }
+
+        .sw-led { width: 12px; height: 12px; background: #400; border-radius: 50%; border: 1px solid #000; transition: all 0.3s; }
+
+        .sw-btn.active { border-color: var(--green); box-shadow: 0 0 15px rgba(0, 255, 136, 0.2); }
+        .sw-btn.active .sw-led { background: var(--green); box-shadow: 0 0 10px var(--green), 0 0 20px var(--green); }
+
+        /* --- SECCIÓN EDITOR --- */
+        .editor-section { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; }
+        .edit-card { background: var(--card); padding: 20px; border-radius: 8px; border: 1px solid var(--panel-border); }
+        .edit-card h3 { font-size: 0.75rem; margin: 0 0 15px 0; color: var(--accent); text-transform: uppercase; border-bottom: 1px solid #2d3142; padding-bottom: 5px; }
+
+        label { display: block; font-size: 0.6rem; margin: 10px 0 5px 0; color: #888; font-weight: bold; }
+        input[type="text"], input[type="color"], textarea { width: 100%; background: #090b10; border: 1px solid #333; color: #fff; padding: 10px; border-radius: 5px; box-sizing: border-box; font-family: inherit; font-size: 0.85rem; }
         textarea { height: 60px; resize: none; }
-        
-        .control-row { display: flex; justify-content: space-between; align-items: center; background: rgba(0,0,0,0.2); padding: 12px; margin-bottom: 10px; border-radius: 8px; }
-        .control-label { font-size: 0.85rem; font-weight: 600; }
-        .action-btn { width: 100%; margin-top: 15px; background: #333; color: white; border: none; padding: 12px; border-radius: 8px; font-weight: bold; cursor: pointer; }
+        .color-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
     </style>
 </head>
 <body>
 
 <div class="dashboard">
     <div class="main-header">
-        <h1>ELRIVERATV <span style="font-weight: 300; font-size: 0.9rem; color: white;">PRO PANEL</span></h1>
+        <h1>ELRIVERATV <span style="font-weight: 300; font-size: 0.8rem; color: #888;">MASTER SWITCHER</span></h1>
         <div class="reference-clock">
-            <span id="ref-time">00:00:00</span>
-            <span id="ref-date">CARGANDO...</span>
+            <span id="ref-time">00:00:00 AM</span>
+            <span id="ref-date">CARGANDO FECHA...</span>
         </div>
     </div>
 
-    <div class="grid">
-        <div class="module-card">
-            <div class="module-header"><span class="module-title">🔘 Marcador Superior</span>
-                <label class="switch"><input type="checkbox" id="checkLive" onchange="sendData('showLive', this.checked)"><span class="slider"></span></label>
-            </div>
-            <div class="control-row"><span class="control-label">Ubicación</span>
-                <label class="switch"><input type="checkbox" id="checkLocation" onchange="sendData('showLocation', this.checked)"><span class="slider"></span></label>
-            </div>
-            <input type="text" id="inputLoc" placeholder="Tepic, Nayarit" onkeyup="sendData('location', this.value)">
+    <div class="switcher-grid">
+        <div class="sw-unit">
+            <span class="sw-label">LIVE BADGE</span>
+            <button class="sw-btn" id="btn-showLive" onclick="toggleBtn('showLive')"><div class="sw-led"></div></button>
+        </div>
+        <div class="sw-unit">
+            <span class="sw-label">LOCATION</span>
+            <button class="sw-btn" id="btn-showLocation" onclick="toggleBtn('showLocation')"><div class="sw-led"></div></button>
+        </div>
+        <div class="sw-unit">
+            <span class="sw-label">LOWER THIRD</span>
+            <button class="sw-btn" id="btn-showLowerThird" onclick="toggleBtn('showLowerThird')"><div class="sw-led"></div></button>
+        </div>
+        <div class="sw-unit">
+            <span class="sw-label">INFO CENTER</span>
+            <button class="sw-btn" id="btn-showInfoCenter" onclick="toggleBtn('showInfoCenter')"><div class="sw-led"></div></button>
+        </div>
+        <div class="sw-unit">
+            <span class="sw-label">TICKER BAR</span>
+            <button class="sw-btn" id="btn-showWeather" onclick="toggleBtn('showWeather')"><div class="sw-led"></div></button>
+        </div>
+        <div class="sw-unit">
+            <span class="sw-label">DATE/CLOCK</span>
+            <button class="sw-btn" id="btn-showClock" onclick="toggleBtn('showClock')"><div class="sw-led"></div></button>
+        </div>
+    </div>
+
+    <div class="editor-section">
+        <div class="edit-card">
+            <h3>Preparación de Textos</h3>
+            <label>UBICACIÓN</label>
+            <input type="text" id="inputLoc" onkeyup="send('location', this.value)">
+            <label>NOMBRE INVITADO</label>
+            <input type="text" id="inputLTMain" onkeyup="send('ltMain', this.value)">
+            <label>DESCRIPCIÓN</label>
+            <input type="text" id="inputLTSub" onkeyup="send('ltSub', this.value)">
         </div>
 
-        <div class="module-card">
-            <div class="module-header"><span class="module-title">🆔 Visibilidad</span></div>
-            <div class="control-row"><span class="control-label">Logo / Brand</span>
-                <label class="switch"><input type="checkbox" id="checkBrand" onchange="sendData('showBrand', this.checked)"><span class="slider"></span></label>
-            </div>
-            <div class="control-row"><span class="control-label">Reloj Digital</span>
-                <label class="switch"><input type="checkbox" id="checkTime" onchange="sendData('showTime', this.checked)"><span class="slider"></span></label>
-            </div>
-            <div class="control-row"><span class="control-label">Fecha Larga</span>
-                <label class="switch"><input type="checkbox" id="checkClock" onchange="sendData('showClock', this.checked)"><span class="slider"></span></label>
-            </div>
-            <div class="control-row"><span class="control-label">Temperatura</span>
-                <label class="switch"><input type="checkbox" id="checkTemp" onchange="sendData('showTemp', this.checked)"><span class="slider"></span></label>
-            </div>
-        </div>
-
-        <div class="module-card">
-            <div class="module-header"><span class="module-title">👤 Invitado (LT)</span>
-                <label class="switch"><input type="checkbox" id="checkLT" onchange="sendData('showLowerThird', this.checked)"><span class="slider"></span></label>
-            </div>
-            <label>NOMBRE</label>
-            <input type="text" id="inputLTMain" onkeyup="sendData('ltMain', this.value)">
-            <label>CARGO / DESCRIPCIÓN</label>
-            <input type="text" id="inputLTSub" onkeyup="sendData('ltSub', this.value)">
-        </div>
-
-        <div class="module-card">
-            <div class="module-header"><span class="module-title">🔳 Info Center</span>
-                <label class="switch"><input type="checkbox" id="checkInfoCenter" onchange="sendData('showInfoCenter', this.checked)"><span class="slider"></span></label>
-            </div>
+        <div class="edit-card">
+            <h3>Contenido Info Center</h3>
             <label>TÍTULO</label>
-            <input type="text" id="inputInfoTitle" onkeyup="sendData('infoTitle', this.value)">
-            <label>CONTENIDO</label>
-            <textarea id="inputInfoBody" onkeyup="sendData('infoBody', this.value)"></textarea>
+            <input type="text" id="inputInfoTitle" onkeyup="send('infoTitle', this.value)">
+            <label>CUERPO</label>
+            <textarea id="inputInfoBody" onkeyup="send('infoBody', this.value)"></textarea>
         </div>
 
-        <div class="module-card">
-            <div class="module-header"><span class="module-title">🎨 Apariencia</span></div>
-            <div style="display:flex; gap:10px">
-                <div style="flex:1"><label>PRIMARIO</label><input type="color" id="colorPrimary" onchange="sendData('colorPrimary', this.value)"></div>
-                <div style="flex:1"><label>ACENTO</label><input type="color" id="colorAccent" onchange="sendData('colorAccent', this.value)"></div>
+        <div class="edit-card">
+            <h3>Marquesina y Estilo</h3>
+            <label>NOTICIAS</label>
+            <input type="text" id="inputNews" onkeyup="send('weatherText', this.value)">
+            <div class="color-row">
+                <div><label>PRIMARIO</label><input type="color" id="colorPrimary" onchange="send('colorPrimary', this.value)"></div>
+                <div><label>ACENTO</label><input type="color" id="colorAccent" onchange="send('colorAccent', this.value)"></div>
             </div>
-        </div>
-
-        <div class="module-card">
-            <div class="module-header"><span class="module-title">🎞️ Marquesina</span>
-                <label class="switch"><input type="checkbox" id="checkWeather" onchange="sendData('showWeather', this.checked)"><span class="slider"></span></label>
-            </div>
-            <label>NOTICIAS / TEXTO</label>
-            <input type="text" id="inputNews" onkeyup="sendData('weatherText', this.value)">
-            <button class="action-btn" onclick="if(confirm('¿Reiniciar?')) db.set({});">Resetear Firebase</button>
         </div>
     </div>
 </div>
@@ -126,30 +144,29 @@
 <script src="https://www.gstatic.com/firebasejs/9.17.1/firebase-database-compat.js"></script>
 
 <script>
-    // Configuración idéntica a la interfaz
     const firebaseConfig = { databaseURL: "https://elriveratv-28c69-default-rtdb.firebaseio.com/" };
     firebase.initializeApp(firebaseConfig);
     const db = firebase.database().ref('overlayData');
 
-    function sendData(key, value) {
-        let valToSend = value;
-        if(typeof value === 'boolean') valToSend = value ? 'true' : 'false';
-        db.update({ [key]: valToSend });
+    let currentStates = {};
+
+    function send(key, value) { db.update({ [key]: value }); }
+
+    function toggleBtn(key) {
+        const newState = currentStates[key] === 'true' ? 'false' : 'true';
+        db.update({ [key]: newState });
     }
 
-    // Sincronizar UI del panel con Firebase
     db.on('value', (snapshot) => {
         const data = snapshot.val() || {};
-        
-        document.getElementById('checkLive').checked = data.showLive !== 'false';
-        document.getElementById('checkLocation').checked = data.showLocation !== 'false';
-        document.getElementById('checkBrand').checked = data.showBrand !== 'false';
-        document.getElementById('checkTime').checked = data.showTime !== 'false';
-        document.getElementById('checkClock').checked = data.showClock !== 'false';
-        document.getElementById('checkTemp').checked = data.showTemp !== 'false';
-        document.getElementById('checkLT').checked = data.showLowerThird === 'true';
-        document.getElementById('checkInfoCenter').checked = data.showInfoCenter === 'true';
-        document.getElementById('checkWeather').checked = data.showWeather !== 'false';
+        currentStates = data;
+
+        updateBtnUI('showLive', data.showLive !== 'false');
+        updateBtnUI('showLocation', data.showLocation !== 'false');
+        updateBtnUI('showLowerThird', data.showLowerThird === 'true');
+        updateBtnUI('showInfoCenter', data.showInfoCenter === 'true');
+        updateBtnUI('showWeather', data.showWeather !== 'false');
+        updateBtnUI('showClock', data.showClock !== 'false');
 
         document.getElementById('inputLoc').value = data.location || "";
         document.getElementById('inputLTMain').value = data.ltMain || "";
@@ -161,11 +178,22 @@
         document.getElementById('colorAccent').value = data.colorAccent || "#E91E63";
     });
 
-    setInterval(() => {
+    function updateBtnUI(id, isActive) {
+        const btn = document.getElementById('btn-' + id);
+        if (isActive) btn.classList.add('active');
+        else btn.classList.remove('active');
+    }
+
+    function updateReference() {
         const now = new Date();
-        document.getElementById('ref-time').innerText = now.toLocaleTimeString('es-MX', { hour12: false });
-        document.getElementById('ref-date').innerText = now.toLocaleDateString('es-MX', { weekday: 'long', day: 'numeric', month: 'long' });
-    }, 1000);
+        // Reloj 12 horas
+        document.getElementById('ref-time').innerText = now.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: true }).toUpperCase();
+        // Fecha Larga
+        document.getElementById('ref-date').innerText = now.toLocaleDateString('es-MX', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' }).toUpperCase();
+    }
+    
+    setInterval(updateReference, 1000);
+    updateReference();
 </script>
 </body>
 </html>
