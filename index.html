@@ -20,7 +20,7 @@
             color: var(--white);
         }
 
-        /* --- GRUPO SUPERIOR (GRANDE CON ANIMACIÓN) --- */
+        /* --- GRUPO SUPERIOR --- */
         .top-left-box {
             position: absolute; top: 40px; left: 40px;
             display: flex; flex-direction: column;
@@ -34,7 +34,7 @@
         .temp-box { background: var(--accent); padding: 8px 20px; font-weight: 700; font-size: 18px; border-left: 1px solid rgba(255,255,255,0.3); white-space: nowrap; transition: all 0.6s; }
         .date-box { background: var(--glass); padding: 6px 20px; font-weight: 500; font-size: 16px; border-top: 3px solid var(--accent); white-space: nowrap; transition: all 0.6s; }
 
-        /* --- WIDGET LANZAMIENTO (CON ANIMACIÓN DE ENTRADA) --- */
+        /* --- WIDGET LANZAMIENTO --- */
         #ui-launch-timer { 
             position: absolute; right: 40px; top: 50%; 
             transform: translateY(-50%); background: var(--glass); 
@@ -49,7 +49,7 @@
 
         @keyframes blink { 50% { opacity: 0.3; } }
 
-        /* --- LOWER THIRD & INFO CENTER (ANIMACIONES ORIGINALES) --- */
+        /* --- LOWER THIRD & INFO CENTER --- */
         .lower-third { 
             position: absolute; bottom: 80px; left: 40px; 
             display: flex; flex-direction: column; 
@@ -70,7 +70,7 @@
         .ic-title { font-family: 'Bebas Neue', cursive; font-size: 32px; color: var(--accent); margin-bottom: 5px; }
         .ic-body { font-size: 17px; font-weight: 300; color: #efefef; }
 
-        /* --- TICKER DINÁMICO --- */
+        /* --- TICKER --- */
         .bottom-container { position: absolute; bottom: 0; width: 100%; height: 60px; display: flex; align-items: stretch; z-index: 100; transition: all 0.6s; }
         .brand-label { background: var(--accent); height: 100%; padding: 0 25px; display: flex; align-items: center; font-weight: 900; font-size: 22px; white-space: nowrap; flex-shrink: 0; transition: all 0.6s; }
         .clock-ticker { background: var(--primary); height: 100%; padding: 0 20px; display: flex; align-items: center; justify-content: center; font-family: 'Bebas Neue', cursive; border-right: 3px solid var(--accent); min-width: 140px; transition: all 0.6s; }
@@ -82,7 +82,7 @@
 
         @keyframes ticker-loop { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
 
-        /* --- ESTADOS DE OCULTACIÓN (RESTAURADOS) --- */
+        /* --- OCULTACIÓN --- */
         .element-hidden { max-width: 0 !important; min-width: 0 !important; padding: 0 !important; opacity: 0 !important; border: none !important; margin: 0 !important; overflow: hidden; }
         .hidden-left { transform: translateX(-110%); opacity: 0; }
         .hidden-right { transform: translateX(110%) translateY(-50%); opacity: 0; }
@@ -94,24 +94,24 @@
 
     <div class="info-center" id="ui-info-center">
         <div class="ic-title" id="val-info-title">INFO CENTER</div>
-        <div class="ic-body" id="val-info-body">Cargando información...</div>
+        <div class="ic-body" id="val-info-body">Cargando...</div>
     </div>
 
     <div id="ui-launch-timer" class="hidden-right">
         <div class="mission-name" id="val-mission-name">MISIÓN</div>
-        <div class="launch-label" id="val-launch-label">TIEMPO DE LANZAMIENTO</div>
+        <div class="launch-label" id="val-launch-label">TIEMPO</div>
         <div id="val-launch-clock">00:00:00</div>
     </div>
 
     <div class="lower-third" id="ui-lt-group">
-        <div class="lt-main" id="val-lt-main">NOMBRE INVITADO</div>
-        <div class="lt-sub" id="val-lt-sub">CARGO O DESCRIPCIÓN</div>
+        <div class="lt-main" id="val-lt-main">NOMBRE</div>
+        <div class="lt-sub" id="val-lt-sub">DESCRIPCIÓN</div>
     </div>
 
     <div class="top-left-box" id="ui-main-group">
         <div class="live-row">
             <div class="live-status" id="ui-live-badge">EN VIVO</div>
-            <div class="location-box" id="ui-location-box">TEPIC, NAYARIT</div>
+            <div class="location-box" id="ui-location-box">TEPIC</div>
             <div class="temp-box" id="ui-temp-box">--°C</div>
         </div>
         <div class="date-row">
@@ -160,11 +160,11 @@
         db.on('value', (snapshot) => {
             const data = snapshot.val() || {};
             
-            // Aplicar colores con transición
+            // Colores
             document.documentElement.style.setProperty('--primary', data.colorPrimary || '#4A148C');
             document.documentElement.style.setProperty('--accent', data.colorAccent || '#E91E63');
 
-            // Visibilidad con clases de animación
+            // Visibilidad - Corregido para detectar strings "true"/"false"
             document.getElementById('ui-live-badge').classList.toggle('element-hidden', data.showLive === 'false');
             document.getElementById('ui-location-box').classList.toggle('element-hidden', data.showLocation === 'false');
             document.getElementById('ui-temp-box').classList.toggle('element-hidden', data.showTemp === 'false');
@@ -173,7 +173,7 @@
             document.getElementById('ui-clock-box').classList.toggle('element-hidden', data.showTime === 'false');
             document.getElementById('ui-ticker-wrapper').classList.toggle('ticker-only-hidden', data.showWeather === 'false');
 
-            // Lower Third & Info Center
+            // LT & Info Center
             document.getElementById('ui-lt-group').classList.toggle('hidden-left', data.showLowerThird !== 'true');
             if(data.ltMain) document.getElementById('val-lt-main').innerText = data.ltMain.toUpperCase();
             if(data.ltSub) document.getElementById('val-lt-sub').innerText = data.ltSub.toUpperCase();
@@ -182,28 +182,23 @@
             if(data.infoTitle) document.getElementById('val-info-title').innerText = data.infoTitle.toUpperCase();
             if(data.infoBody) document.getElementById('val-info-body').innerText = data.infoBody;
 
-            // --- Reloj de Lanzamiento ---
-            const timerState = data.timerState || "RUNNING";
+            // Reloj Lanzamiento
             document.getElementById('ui-launch-timer').classList.toggle('hidden-right', data.showLaunchTimer !== 'true');
-            document.getElementById('val-mission-name').innerText = (data.missionName || "MISIÓN");
-            document.getElementById('val-launch-label').innerText = (data.launchLabelText || "TIEMPO DE LANZAMIENTO");
-
+            if(data.missionName) document.getElementById('val-mission-name').innerText = data.missionName.toUpperCase();
+            
             const clockEl = document.getElementById('val-launch-clock');
+            const timerState = data.timerState || "RUNNING";
             clockEl.classList.toggle('hold-blink', timerState === "HOLD");
 
             if (data.launchTarget) {
-                const target = new Date(data.launchTarget).getTime();
                 if(launchInterval) clearInterval(launchInterval);
-                
                 launchInterval = setInterval(() => {
-                    let diff;
-                    if (timerState === "PAUSED") {
-                        diff = target - data.pauseTimestamp;
-                    } else if (timerState === "HOLD") {
-                        return; 
-                    } else {
-                        diff = target - new Date().getTime();
-                    }
+                    const target = new Date(data.launchTarget).getTime();
+                    const now = new Date().getTime();
+                    let diff = target - now;
+
+                    if (timerState === "PAUSED") diff = target - (data.pauseTimestamp || now);
+                    if (timerState === "HOLD") return;
 
                     const abs = Math.abs(diff);
                     const h = String(Math.floor(abs/3600000)).padStart(2,'0');
@@ -213,19 +208,18 @@
                 }, 1000);
             }
 
-            // Ticker con lógica de repetición restaurada
+            // Ticker
             const rawText = (data.weatherText || "BIENVENIDOS A ELRIVERATV...").toUpperCase();
             if (rawText !== lastText) {
                 lastText = rawText;
                 const content = document.getElementById('ui-ticker-content');
                 content.innerHTML = '';
-                const fullItem = rawText + "  •  ";
-                const reps = rawText.length < 20 ? 10 : 4;
+                const reps = 6;
                 for(let i=0; i<reps; i++) {
-                    const s = document.createElement('span'); s.className='ticker-text'; s.innerText=fullItem;
+                    const s = document.createElement('span'); s.className='ticker-text'; s.innerText = rawText + "  •  ";
                     content.appendChild(s);
                 }
-                content.style.animationDuration = `${Math.max(10, (fullItem.length * reps) / 15)}s`;
+                content.style.animationDuration = `${Math.max(10, (rawText.length * reps) / 10)}s`;
             }
         });
 
