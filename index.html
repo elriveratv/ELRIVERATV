@@ -34,31 +34,7 @@
         .temp-box { background: var(--accent); padding: 8px 20px; font-weight: 700; font-size: 18px; border-left: 1px solid rgba(255,255,255,0.3); white-space: nowrap; transition: all 0.6s; }
         .date-box { background: var(--glass); padding: 6px 20px; font-weight: 500; font-size: 16px; border-top: 3px solid var(--accent); white-space: nowrap; transition: all 0.6s; }
 
-        /* --- WIDGET LANZAMIENTO --- */
-        #ui-launch-timer { 
-            position: absolute; right: 40px; top: 50%; 
-            transform: translateY(-50%); background: var(--glass); 
-            border-right: 8px solid var(--accent); padding: 20px 30px; 
-            text-align: right; transition: all 0.8s cubic-bezier(0.16, 1, 0.3, 1); 
-            z-index: 40; 
-        }
-        .mission-name { font-family: 'Montserrat', sans-serif; font-weight: 900; font-size: 14px; color: var(--white); opacity: 0.6; margin-bottom: 5px; text-transform: uppercase; }
-        .launch-label { font-family: 'Bebas Neue', cursive; font-size: 22px; color: var(--accent); letter-spacing: 2px; }
-        #val-launch-clock { font-family: 'Bebas Neue', cursive; font-size: 70px; line-height: 0.9; color: var(--white); }
-        .hold-blink { animation: blink 1s infinite; color: #ffd600 !important; }
-
-        @keyframes blink { 50% { opacity: 0.3; } }
-
-        /* --- LOWER THIRD & INFO CENTER --- */
-        .lower-third { 
-            position: absolute; bottom: 80px; left: 40px; 
-            display: flex; flex-direction: column; 
-            transition: all 0.8s cubic-bezier(0.16, 1, 0.3, 1); 
-            z-index: 60; 
-        }
-        .lt-main { background: var(--primary); padding: 5px 30px; font-family: 'Bebas Neue', cursive; font-size: 35px; border-left: 6px solid var(--accent); width: fit-content; white-space: nowrap; }
-        .lt-sub { background: var(--glass); padding: 3px 30px; font-size: 15px; font-weight: 300; text-transform: uppercase; width: fit-content; border-top: 1px solid rgba(255,255,255,0.1); }
-        
+        /* --- INFO CENTER --- */
         .info-center { 
             position: absolute; bottom: 85px; left: 50%; 
             transform: translateX(-50%) scale(1); background: var(--glass); 
@@ -70,7 +46,17 @@
         .ic-title { font-family: 'Bebas Neue', cursive; font-size: 32px; color: var(--accent); margin-bottom: 5px; }
         .ic-body { font-size: 17px; font-weight: 300; color: #efefef; }
 
-        /* --- TICKER --- */
+        /* --- LOWER THIRD --- */
+        .lower-third { 
+            position: absolute; bottom: 80px; left: 40px; 
+            display: flex; flex-direction: column; 
+            transition: all 0.8s cubic-bezier(0.16, 1, 0.3, 1); 
+            z-index: 60; 
+        }
+        .lt-main { background: var(--primary); padding: 5px 30px; font-family: 'Bebas Neue', cursive; font-size: 35px; border-left: 6px solid var(--accent); width: fit-content; white-space: nowrap; }
+        .lt-sub { background: var(--glass); padding: 3px 30px; font-size: 15px; font-weight: 300; text-transform: uppercase; width: fit-content; border-top: 1px solid rgba(255,255,255,0.1); }
+
+        /* --- TICKER DINÁMICO --- */
         .bottom-container { position: absolute; bottom: 0; width: 100%; height: 60px; display: flex; align-items: stretch; z-index: 100; transition: all 0.6s; }
         .brand-label { background: var(--accent); height: 100%; padding: 0 25px; display: flex; align-items: center; font-weight: 900; font-size: 22px; white-space: nowrap; flex-shrink: 0; transition: all 0.6s; }
         .clock-ticker { background: var(--primary); height: 100%; padding: 0 20px; display: flex; align-items: center; justify-content: center; font-family: 'Bebas Neue', cursive; border-right: 3px solid var(--accent); min-width: 140px; transition: all 0.6s; }
@@ -82,30 +68,23 @@
 
         @keyframes ticker-loop { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
 
-        /* --- OCULTACIÓN --- */
+        /* --- ESTADOS DE OCULTACIÓN --- */
         .element-hidden { max-width: 0 !important; min-width: 0 !important; padding: 0 !important; opacity: 0 !important; border: none !important; margin: 0 !important; overflow: hidden; }
         .hidden-left { transform: translateX(-110%); opacity: 0; }
-        .hidden-right { transform: translateX(110%) translateY(-50%); opacity: 0; }
         .info-hidden { transform: translate(-50%, 30px) scale(0.8); opacity: 0; pointer-events: none; }
         .ticker-only-hidden { transform: translateY(60px); opacity: 0; }
     </style>
 </head>
 <body>
 
-    <div class="info-center" id="ui-info-center">
+    <div class="info-center info-hidden" id="ui-info-center">
         <div class="ic-title" id="val-info-title">INFO CENTER</div>
         <div class="ic-body" id="val-info-body">Cargando...</div>
     </div>
 
-    <div id="ui-launch-timer" class="hidden-right">
-        <div class="mission-name" id="val-mission-name">MISIÓN</div>
-        <div class="launch-label" id="val-launch-label">TIEMPO</div>
-        <div id="val-launch-clock">00:00:00</div>
-    </div>
-
-    <div class="lower-third" id="ui-lt-group">
+    <div class="lower-third hidden-left" id="ui-lt-group">
         <div class="lt-main" id="val-lt-main">NOMBRE</div>
-        <div class="lt-sub" id="val-lt-sub">DESCRIPCIÓN</div>
+        <div class="lt-sub" id="val-lt-sub">CARGO</div>
     </div>
 
     <div class="top-left-box" id="ui-main-group">
@@ -134,21 +113,16 @@
     <script src="https://www.gstatic.com/firebasejs/9.17.1/firebase-database-compat.js"></script>
 
     <script>
-        const firebaseConfig = { databaseURL: "https://elriveratv-28c69-default-rtdb.firebaseio.com/" };
+        // Configuración de Firebase
+        const firebaseConfig = { 
+            databaseURL: "https://elriveratv-28c69-default-rtdb.firebaseio.com/" 
+        };
         firebase.initializeApp(firebaseConfig);
         const db = firebase.database().ref('overlayData');
 
-        let lastText = "";
-        let launchInterval = null;
+        let lastTickerText = "";
 
-        async function updateWeather() {
-            try {
-                const res = await fetch('https://api.open-meteo.com/v1/forecast?latitude=21.509&longitude=-104.895&current_weather=true');
-                const data = await res.json();
-                document.getElementById('ui-temp-box').innerText = `${Math.round(data.current_weather.temperature)}°C`;
-            } catch (e) { console.error(e); }
-        }
-
+        // Reloj y Fecha Local
         function updateTime() {
             const now = new Date();
             const parts = now.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: true }).split(' ');
@@ -157,6 +131,16 @@
             document.getElementById('ui-date-box').innerText = now.toLocaleDateString('es-MX', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' }).toUpperCase();
         }
 
+        // Clima (Tepic, Nayarit)
+        async function updateWeather() {
+            try {
+                const res = await fetch('https://api.open-meteo.com/v1/forecast?latitude=21.509&longitude=-104.895&current_weather=true');
+                const data = await res.json();
+                document.getElementById('ui-temp-box').innerText = `${Math.round(data.current_weather.temperature)}°C`;
+            } catch (e) { console.error("Error Clima:", e); }
+        }
+
+        // Sincronización en Tiempo Real
         db.on('value', (snapshot) => {
             const data = snapshot.val() || {};
             
@@ -164,7 +148,7 @@
             document.documentElement.style.setProperty('--primary', data.colorPrimary || '#4A148C');
             document.documentElement.style.setProperty('--accent', data.colorAccent || '#E91E63');
 
-            // Visibilidad - Corregido para detectar strings "true"/"false"
+            // Visibilidad (Toggle por String de Firebase)
             document.getElementById('ui-live-badge').classList.toggle('element-hidden', data.showLive === 'false');
             document.getElementById('ui-location-box').classList.toggle('element-hidden', data.showLocation === 'false');
             document.getElementById('ui-temp-box').classList.toggle('element-hidden', data.showTemp === 'false');
@@ -173,7 +157,7 @@
             document.getElementById('ui-clock-box').classList.toggle('element-hidden', data.showTime === 'false');
             document.getElementById('ui-ticker-wrapper').classList.toggle('ticker-only-hidden', data.showWeather === 'false');
 
-            // LT & Info Center
+            // Lower Third & Info Center
             document.getElementById('ui-lt-group').classList.toggle('hidden-left', data.showLowerThird !== 'true');
             if(data.ltMain) document.getElementById('val-lt-main').innerText = data.ltMain.toUpperCase();
             if(data.ltSub) document.getElementById('val-lt-sub').innerText = data.ltSub.toUpperCase();
@@ -182,45 +166,23 @@
             if(data.infoTitle) document.getElementById('val-info-title').innerText = data.infoTitle.toUpperCase();
             if(data.infoBody) document.getElementById('val-info-body').innerText = data.infoBody;
 
-            // Reloj Lanzamiento
-            document.getElementById('ui-launch-timer').classList.toggle('hidden-right', data.showLaunchTimer !== 'true');
-            if(data.missionName) document.getElementById('val-mission-name').innerText = data.missionName.toUpperCase();
-            
-            const clockEl = document.getElementById('val-launch-clock');
-            const timerState = data.timerState || "RUNNING";
-            clockEl.classList.toggle('hold-blink', timerState === "HOLD");
-
-            if (data.launchTarget) {
-                if(launchInterval) clearInterval(launchInterval);
-                launchInterval = setInterval(() => {
-                    const target = new Date(data.launchTarget).getTime();
-                    const now = new Date().getTime();
-                    let diff = target - now;
-
-                    if (timerState === "PAUSED") diff = target - (data.pauseTimestamp || now);
-                    if (timerState === "HOLD") return;
-
-                    const abs = Math.abs(diff);
-                    const h = String(Math.floor(abs/3600000)).padStart(2,'0');
-                    const m = String(Math.floor((abs%3600000)/60000)).padStart(2,'0');
-                    const s = String(Math.floor((abs%60000)/1000)).padStart(2,'0');
-                    clockEl.innerText = `${diff < 0 ? '+':'-'}${h}:${m}:${s}`;
-                }, 1000);
-            }
-
-            // Ticker
-            const rawText = (data.weatherText || "BIENVENIDOS A ELRIVERATV...").toUpperCase();
-            if (rawText !== lastText) {
-                lastText = rawText;
-                const content = document.getElementById('ui-ticker-content');
-                content.innerHTML = '';
-                const reps = 6;
-                for(let i=0; i<reps; i++) {
-                    const s = document.createElement('span'); s.className='ticker-text'; s.innerText = rawText + "  •  ";
-                    content.appendChild(s);
+            // Ticker dinámico con repetición
+            const currentTicker = (data.weatherText || "BIENVENIDOS A ELRIVERATV...").toUpperCase();
+            if (currentTicker !== lastTickerText) {
+                lastTickerText = currentTicker;
+                const container = document.getElementById('ui-ticker-content');
+                container.innerHTML = '';
+                const repetitions = 8;
+                for(let i=0; i < repetitions; i++) {
+                    const span = document.createElement('span');
+                    span.className = 'ticker-text';
+                    span.innerText = currentTicker + "  •  ";
+                    container.appendChild(span);
                 }
-                content.style.animationDuration = `${Math.max(10, (rawText.length * reps) / 10)}s`;
+                container.style.animationDuration = `${Math.max(12, (currentTicker.length * repetitions) / 10)}s`;
             }
+
+            if(data.location) document.getElementById('ui-location-box').innerText = data.location.toUpperCase();
         });
 
         setInterval(updateTime, 1000);
