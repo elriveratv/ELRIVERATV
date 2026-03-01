@@ -34,7 +34,7 @@
         #ref-time { font-size: 1.6rem; color: #fff; line-height: 1; }
         #ref-date { font-size: 0.8rem; color: #888; text-transform: uppercase; margin-top: 4px; display: block; }
 
-        /* --- SWITCHER GRID (TODOS LOS BOTONES RESTAURADOS) --- */
+        /* --- SWITCHER GRID --- */
         .switcher-grid { 
             display: grid; 
             grid-template-columns: repeat(auto-fill, minmax(110px, 1fr)); 
@@ -56,7 +56,7 @@
 
         .sw-led { width: 12px; height: 12px; background: #400; border-radius: 50%; border: 1px solid #000; transition: all 0.3s; }
         .sw-btn.active { border-color: var(--green); }
-        .sw-btn.active .sw-led { background: var(--green); box-shadow: 0 0 10px var(--green), 0 0 20px var(--green); }
+        .sw-btn.active .sw-led { background: var(--green); box-shadow: 0 0 10px var(--green); }
 
         /* --- EDITOR SECTION --- */
         .editor-section { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; }
@@ -65,26 +65,27 @@
 
         label { display: block; font-size: 0.6rem; margin: 10px 0 5px 0; color: #888; font-weight: bold; }
         input[type="text"], input[type="color"], input[type="range"], textarea { 
-            width: 100%; background: #090b10; border: 1px solid #333; color: #fff; padding: 10px; 
-            border-radius: 5px; box-sizing: border-box; font-family: inherit; font-size: 0.85rem; 
+            width: 100%; background: #090b10; border: 1px solid #333; color: #fff; padding: 8px; 
+            border-radius: 5px; box-sizing: border-box; font-family: inherit; font-size: 0.8rem; 
         }
-        textarea { height: 60px; resize: none; }
+        textarea { height: 50px; resize: none; }
 
-        /* --- MODAL AJUSTES --- */
+        /* --- MODAL AJUSTES GRANULAR --- */
         .modal-overlay {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.85); display: none; justify-content: center; align-items: center;
-            z-index: 1000; backdrop-filter: blur(8px);
+            background: rgba(0,0,0,0.9); display: none; justify-content: center; align-items: center;
+            z-index: 1000; backdrop-filter: blur(10px);
         }
         .modal-content {
-            background: var(--card); width: 95%; max-width: 700px; padding: 30px;
+            background: var(--card); width: 95%; max-width: 900px; padding: 30px;
             border-radius: 15px; border: 2px solid var(--primary);
             max-height: 90vh; overflow-y: auto;
         }
-        .settings-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+        .settings-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 15px; }
         .setting-group { background: #0b0d14; padding: 15px; border-radius: 8px; border: 1px solid #222; }
-        .setting-group h4 { margin: 0 0 15px 0; font-size: 0.7rem; color: var(--green); text-transform: uppercase; border-bottom: 1px solid #333; padding-bottom: 5px; }
-
+        .setting-group h4 { margin: 0 0 10px 0; font-size: 0.75rem; color: var(--green); text-transform: uppercase; border-bottom: 1px solid #333; padding-bottom: 5px; }
+        
+        .control-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; align-items: center; margin-bottom: 5px; }
     </style>
 </head>
 <body>
@@ -92,9 +93,8 @@
 <div class="dashboard">
     <div class="main-header">
         <h1>ELRIVERATV <span style="font-weight: 300; font-size: 0.8rem; color: #888;">MASTER SWITCHER</span></h1>
-        
         <div class="header-controls">
-            <button class="btn-settings" onclick="openModal()">⚙️ AJUSTES DE ESTILO</button>
+            <button class="btn-settings" onclick="openModal()">⚙️ ESTILOS AVANZADOS</button>
             <div class="reference-clock">
                 <span id="ref-time">00:00:00 AM</span>
                 <span id="ref-date">FECHA</span>
@@ -108,7 +108,6 @@
         <div class="sw-unit"><span class="sw-label">TEMPERATURE</span><button class="sw-btn" id="btn-showTemp" onclick="toggleBtn('showTemp')"><div class="sw-led"></div></button></div>
         <div class="sw-unit"><span class="sw-label">LOWER THIRD</span><button class="sw-btn" id="btn-showLowerThird" onclick="toggleBtn('showLowerThird')"><div class="sw-led"></div></button></div>
         <div class="sw-unit"><span class="sw-label">INFO CENTER</span><button class="sw-btn" id="btn-showInfoCenter" onclick="toggleBtn('showInfoCenter')"><div class="sw-led"></div></button></div>
-        
         <div class="sw-unit"><span class="sw-label">BRAND LOGO</span><button class="sw-btn" id="btn-showBrand" onclick="toggleBtn('showBrand')"><div class="sw-led"></div></button></div>
         <div class="sw-unit"><span class="sw-label">CLOCK / DATE</span><button class="sw-btn" id="btn-showTime" onclick="toggleBtn('showTime')"><div class="sw-led"></div></button></div>
         <div class="sw-unit"><span class="sw-label">TICKER BAR</span><button class="sw-btn" id="btn-showWeather" onclick="toggleBtn('showWeather')"><div class="sw-led"></div></button></div>
@@ -116,24 +115,22 @@
 
     <div class="editor-section">
         <div class="edit-card">
-            <h3>Textos Overlay</h3>
-            <label>UBICACIÓN (CIUDAD)</label><input type="text" id="inputLoc" onkeyup="send('location', this.value)">
+            <h3>Textos</h3>
+            <label>UBICACIÓN</label><input type="text" id="inputLoc" onkeyup="send('location', this.value)">
             <label>L3: NOMBRE</label><input type="text" id="inputLTMain" onkeyup="send('ltMain', this.value)">
-            <label>L3: CARGO</label><input type="text" id="inputLTSub" onkeyup="send('ltSub', this.value)">
+            <label>L3: DESCRIPCIÓN</label><input type="text" id="inputLTSub" onkeyup="send('ltSub', this.value)">
         </div>
-
         <div class="edit-card">
             <h3>Info Center</h3>
             <label>TÍTULO</label><input type="text" id="inputInfoTitle" onkeyup="send('infoTitle', this.value)">
-            <label>CUERPO DE NOTICIA</label><textarea id="inputInfoBody" onkeyup="send('infoBody', this.value)"></textarea>
+            <label>CUERPO</label><textarea id="inputInfoBody" onkeyup="send('infoBody', this.value)"></textarea>
         </div>
-
         <div class="edit-card">
-            <h3>Marquesina Dinámica</h3>
-            <label>TEXTO DEL TICKER</label><textarea id="inputNews" oninput="send('weatherText', this.value)"></textarea>
-            <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px; margin-top:10px;">
-                <div><label>COLOR PRIMARIO</label><input type="color" id="colorPrimary" onchange="send('colorPrimary', this.value)"></div>
-                <div><label>COLOR ACENTO</label><input type="color" id="colorAccent" onchange="send('colorAccent', this.value)"></div>
+            <h3>Ticker & Colores Base</h3>
+            <label>NOTICIAS</label><textarea id="inputNews" oninput="send('weatherText', this.value)"></textarea>
+            <div class="control-row">
+                <div><label>PRIMARIO</label><input type="color" id="colorPrimary" onchange="send('colorPrimary', this.value)"></div>
+                <div><label>ACENTO</label><input type="color" id="colorAccent" onchange="send('colorAccent', this.value)"></div>
             </div>
         </div>
     </div>
@@ -142,39 +139,53 @@
 <div class="modal-overlay" id="settingsModal">
     <div class="modal-content">
         <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
-            <h2 style="font-family: Oswald; color: var(--accent); margin:0;">CONFIGURACIÓN DE ESTILOS</h2>
+            <h2 style="font-family: Oswald; color: var(--accent); margin:0;">ESTILOS INDEPENDIENTES</h2>
             <span style="color:white; font-size:2rem; cursor:pointer;" onclick="closeModal()">&times;</span>
         </div>
-        
+
         <div class="settings-grid">
             <div class="setting-group">
-                <h4>Tamaños de Fuente</h4>
-                <label>L3 Nombre</label><input type="range" min="15" max="60" id="sizeLTMain" oninput="send('sizeLTMain', this.value)">
-                <label>L3 Subtítulo</label><input type="range" min="10" max="30" id="sizeLTSub" oninput="send('sizeLTSub', this.value)">
-                <label>Info Título</label><input type="range" min="15" max="50" id="sizeInfoTitle" oninput="send('sizeInfoTitle', this.value)">
-                <label>Ticker</label><input type="range" min="12" max="35" id="sizeTicker" oninput="send('sizeTicker', this.value)">
+                <h4>Lower Third (L3)</h4>
+                <div class="control-row">
+                    <div><label>Fondo</label><input type="color" id="bgLT" onchange="send('bgLT', this.value)"></div>
+                    <div><label>Texto</label><input type="color" id="colorTextLT" onchange="send('colorTextLT', this.value)"></div>
+                </div>
+                <label>Opacidad</label><input type="range" min="0" max="100" id="opLT" oninput="send('opLT', this.value/100)">
+                <label>Tamaño Nombre</label><input type="range" min="15" max="70" id="sizeLTMain" oninput="send('sizeLTMain', this.value)">
             </div>
 
             <div class="setting-group">
-                <h4>Transparencias (Alpha)</h4>
-                <label>Opacidad General (Glass)</label><input type="range" min="0" max="100" id="opGlass" oninput="send('opGlass', this.value/100)">
-                <label>Opacidad Ticker</label><input type="range" min="0" max="100" id="opTicker" oninput="send('opTicker', this.value/100)">
+                <h4>Info Center</h4>
+                <div class="control-row">
+                    <div><label>Fondo</label><input type="color" id="bgInfo" onchange="send('bgInfo', this.value)"></div>
+                    <div><label>Título</label><input type="color" id="colorTextInfo" onchange="send('colorTextInfo', this.value)"></div>
+                </div>
+                <label>Opacidad</label><input type="range" min="0" max="100" id="opInfo" oninput="send('opInfo', this.value/100)">
+                <label>Tamaño Título</label><input type="range" min="15" max="60" id="sizeInfoTitle" oninput="send('sizeInfoTitle', this.value)">
             </div>
 
             <div class="setting-group">
-                <h4>Colores Especiales</h4>
-                <label>Texto Lower Third</label><input type="color" id="colorTextLT" onchange="send('colorTextLT', this.value)">
-                <label>Texto Info Center</label><input type="color" id="colorTextInfo" onchange="send('colorTextInfo', this.value)">
+                <h4>Ticker (Barra Inferior)</h4>
+                <div class="control-row">
+                    <div><label>Fondo</label><input type="color" id="bgTicker" onchange="send('bgTicker', this.value)"></div>
+                    <div><label>Texto</label><input type="color" id="colorTextTicker" onchange="send('colorTextTicker', this.value)"></div>
+                </div>
+                <label>Opacidad</label><input type="range" min="0" max="100" id="opTicker" oninput="send('opTicker', this.value/100)">
+                <label>Tamaño Fuente</label><input type="range" min="10" max="40" id="sizeTicker" oninput="send('sizeTicker', this.value)">
+                <label>Velocidad (Segs)</label><input type="range" min="5" max="60" id="tickerSpeed" oninput="send('tickerSpeed', this.value)">
             </div>
 
             <div class="setting-group">
-                <h4>Velocidad Ticker</h4>
-                <label>Segundos por vuelta</label><input type="range" min="5" max="60" id="tickerSpeed" oninput="send('tickerSpeed', this.value)">
-                <p style="font-size:0.5rem; color:#888;">* Valores bajos = más rápido</p>
+                <h4>Reloj & Brand</h4>
+                <div class="control-row">
+                    <div><label>Fondo Reloj</label><input type="color" id="bgClock" onchange="send('bgClock', this.value)"></div>
+                    <div><label>Texto Reloj</label><input type="color" id="colorTextClock" onchange="send('colorTextClock', this.value)"></div>
+                </div>
+                <label>Tamaño Hora</label><input type="range" min="20" max="60" id="sizeClock" oninput="send('sizeClock', this.value)">
+                <label>Opacidad Reloj</label><input type="range" min="0" max="100" id="opClock" oninput="send('opClock', this.value/100)">
             </div>
         </div>
-        
-        <button class="btn-settings" style="width:100%; margin-top:20px; padding:15px;" onclick="closeModal()">CERRAR Y APLICAR</button>
+        <button class="btn-settings" style="width:100%; margin-top:20px; padding:15px;" onclick="closeModal()">APLICAR CAMBIOS</button>
     </div>
 </div>
 
@@ -189,12 +200,10 @@
     let currentStates = {};
 
     function send(key, value) { db.update({ [key]: value }); }
-
     function toggleBtn(key) {
         const newState = currentStates[key] === 'true' ? 'false' : 'true';
         db.update({ [key]: newState });
     }
-
     function openModal() { document.getElementById('settingsModal').style.display = 'flex'; }
     function closeModal() { document.getElementById('settingsModal').style.display = 'none'; }
 
@@ -202,30 +211,32 @@
         const data = snapshot.val() || {};
         currentStates = data;
 
-        // Actualización de los 8 botones de visibilidad
-        updateBtnUI('showLive', data.showLive !== 'false');
-        updateBtnUI('showLocation', data.showLocation !== 'false');
-        updateBtnUI('showTemp', data.showTemp !== 'false');
+        // Actualizar Switches
+        const keys = ['showLive','showLocation','showTemp','showLowerThird','showInfoCenter','showBrand','showTime','showWeather'];
+        keys.forEach(k => updateBtnUI(k, data[k] !== 'false' && data[k] !== undefined));
+        // Caso especial Lower Third e Info Center suelen venir por defecto en false
         updateBtnUI('showLowerThird', data.showLowerThird === 'true');
         updateBtnUI('showInfoCenter', data.showInfoCenter === 'true');
-        updateBtnUI('showBrand', data.showBrand !== 'false');
-        updateBtnUI('showTime', data.showTime !== 'false');
-        updateBtnUI('showWeather', data.showWeather !== 'false');
 
-        // Sincronizar Inputs
+        // Sincronizar Inputs Texto
         document.getElementById('inputLoc').value = data.location || "";
         document.getElementById('inputLTMain').value = data.ltMain || "";
         document.getElementById('inputLTSub').value = data.ltSub || "";
         document.getElementById('inputInfoTitle').value = data.infoTitle || "";
         document.getElementById('inputInfoBody').value = data.infoBody || "";
         document.getElementById('inputNews').value = data.weatherText || "";
-        document.getElementById('colorPrimary').value = data.colorPrimary || "#4A148C";
-        document.getElementById('colorAccent').value = data.colorAccent || "#E91E63";
 
-        // Sincronizar Sliders del Modal
-        if(data.sizeLTMain) document.getElementById('sizeLTMain').value = data.sizeLTMain;
-        if(data.opGlass) document.getElementById('opGlass').value = data.opGlass * 100;
-        if(data.tickerSpeed) document.getElementById('tickerSpeed').value = data.tickerSpeed;
+        // Sincronizar Colores y Sliders del Modal
+        const colorIds = ['colorPrimary','colorAccent','bgLT','colorTextLT','bgInfo','colorTextInfo','bgTicker','colorTextTicker','bgClock','colorTextClock'];
+        colorIds.forEach(id => { if(data[id]) document.getElementById(id).value = data[id]; });
+
+        const rangeIds = ['sizeLTMain','sizeInfoTitle','sizeTicker','sizeClock','tickerSpeed'];
+        rangeIds.forEach(id => { if(data[id]) document.getElementById(id).value = data[id]; });
+
+        if(data.opLT) document.getElementById('opLT').value = data.opLT * 100;
+        if(data.opInfo) document.getElementById('opInfo').value = data.opInfo * 100;
+        if(data.opTicker) document.getElementById('opTicker').value = data.opTicker * 100;
+        if(data.opClock) document.getElementById('opClock').value = data.opClock * 100;
     });
 
     function updateBtnUI(id, isActive) {
@@ -241,7 +252,6 @@
         document.getElementById('ref-time').innerText = now.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: true }).toUpperCase();
         document.getElementById('ref-date').innerText = now.toLocaleDateString('es-MX', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' }).toUpperCase();
     }
-    
     setInterval(updateReference, 1000);
     updateReference();
 </script>
