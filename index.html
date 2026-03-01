@@ -15,13 +15,7 @@
             --bg-clock: rgba(74, 20, 140, 0.85);
         }
 
-        body { 
-            background-color: transparent; 
-            margin: 0; padding: 0; 
-            overflow: hidden; 
-            font-family: 'Oswald', sans-serif;
-            color: var(--white);
-        }
+        body { background-color: transparent; margin: 0; padding: 0; overflow: hidden; font-family: 'Oswald', sans-serif; color: var(--white); }
 
         /* --- GRUPO SUPERIOR --- */
         .top-left-box { position: absolute; top: 40px; left: 40px; display: flex; flex-direction: column; z-index: 70; }
@@ -30,25 +24,35 @@
         .location-box { background: rgba(0,0,0,0.8); padding: 8px 20px; font-size: 18px; font-weight: 400; border-left: 2px solid rgba(255,255,255,0.2); white-space: nowrap; }
         .temp-box { background: var(--accent); padding: 8px 20px; font-weight: 700; font-size: 18px; border-left: 1px solid rgba(255,255,255,0.3); white-space: nowrap; }
 
+        /* ANIMACIÓN CLIMA */
         .weather-details-row { 
             display: flex; align-items: stretch; margin-bottom: 4px; overflow: hidden; width: fit-content; 
-            transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.5s ease, max-height 0.6s ease;
-            opacity: 1; transform: translateY(0); max-height: 50px;
+            transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+            opacity: 1; transform: translateY(0); max-height: 60px;
         }
-        .weather-details-row.element-hidden { opacity: 0 !important; transform: translateY(-20px) !important; max-height: 0 !important; margin-bottom: 0 !important; pointer-events: none; }
+        .weather-details-row.ani-hidden { opacity: 0; transform: translateY(-20px); max-height: 0; margin-bottom: 0; pointer-events: none; }
         .weather-info { background: rgba(0,0,0,0.8); padding: 6px 15px; font-size: 14px; font-weight: 500; border-left: 1px solid rgba(255,255,255,0.1); white-space: nowrap; display: flex; align-items: center; gap: 5px; }
 
         /* --- INFO CENTER --- */
-        .info-center { position: absolute; bottom: 100px; left: 50%; transform: translateX(-50%) scale(1); background: var(--bg-info); border: 3px solid var(--primary); width: 500px; padding: 20px; text-align: center; transition: 0.6s; z-index: 50; }
+        .info-center { 
+            position: absolute; bottom: 100px; left: 50%; transform: translateX(-50%); 
+            background: var(--bg-info); border: 3px solid var(--primary); width: 500px; padding: 20px; text-align: center; z-index: 50;
+            transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .info-center.ani-hidden { opacity: 0; transform: translate(-50%, 30px) scale(0.9); pointer-events: none; }
         .ic-title { font-family: 'Bebas Neue', cursive; font-size: 32px; margin-bottom: 5px; }
 
         /* --- LOWER THIRD --- */
-        .lower-third { position: absolute; bottom: 95px; left: 40px; display: flex; flex-direction: column; transition: 0.8s; z-index: 60; }
+        .lower-third { 
+            position: absolute; bottom: 95px; left: 40px; display: flex; flex-direction: column; z-index: 60;
+            transition: all 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .lower-third.ani-hidden { opacity: 0; transform: translateX(-110%); }
         .lt-main { background: var(--bg-lt); padding: 5px 30px; font-family: 'Montserrat', sans-serif; font-weight: 900; border-left: 6px solid var(--accent); width: fit-content; white-space: nowrap; }
         .lt-sub { background: rgba(0,0,0,0.8); padding: 3px 30px; font-size: 15px; font-weight: 300; text-transform: uppercase; width: fit-content; border-top: 1px solid rgba(255,255,255,0.1); }
 
         /* --- BARRA INFERIOR --- */
-        .bottom-container { position: absolute; bottom: 0; width: 100%; height: 75px; display: flex; align-items: stretch; z-index: 100; transition: transform 0.6s; }
+        .bottom-container { position: absolute; bottom: 0; width: 100%; height: 75px; display: flex; align-items: stretch; z-index: 100; }
         .brand-label { background: var(--accent); height: 100%; padding: 0 25px; display: flex; align-items: center; font-weight: 900; font-size: 22px; white-space: nowrap; flex-shrink: 0; position: relative; overflow: hidden; }
         .brand-label::after { content: ''; position: absolute; top: 0; left: -150%; width: 200%; height: 100%; background: linear-gradient(135deg, rgba(255,255,255,0) 30%, rgba(255,255,255,0.4) 50%, rgba(255,255,255,0) 70%); animation: premium-sweep 5s infinite; }
         @keyframes premium-sweep { 0% { left: -150%; } 50%, 100% { left: 150%; } }
@@ -59,29 +63,27 @@
 
         .ticker-wrapper { flex: 1; height: 100%; background: var(--bg-ticker); display: flex; align-items: center; overflow: hidden; position: relative; }
         .ticker-content { display: flex; white-space: nowrap; will-change: transform; animation: ticker-loop linear infinite; }
-        .ticker-text { padding-right: 200px; font-size: 20px; font-weight: 500; display: flex; align-items: center; }
+        .ticker-text { padding-right: 150px; font-size: 20px; font-weight: 500; display: flex; align-items: center; }
 
         @keyframes ticker-loop { 0% { transform: translate3d(0, 0, 0); } 100% { transform: translate3d(-50%, 0, 0); } }
 
-        /* --- VISIBILIDAD --- */
-        .element-hidden-hide { display: none !important; }
-        .hidden-left { transform: translateX(-110%); opacity: 0; }
-        .info-hidden { transform: translate(-50%, 30px) scale(0.8); opacity: 0; }
+        /* --- CLASES DE OCULTACIÓN (HARD HIDE) --- */
+        .hide-now { display: none !important; }
     </style>
 </head>
 <body>
 
-    <div class="info-center info-hidden" id="ui-info-center">
+    <div class="info-center ani-hidden" id="ui-info-center">
         <div class="ic-title" id="val-info-title">INFO CENTER</div>
         <div class="ic-body" id="val-info-body">Cargando...</div>
     </div>
 
-    <div class="lower-third hidden-left" id="ui-lt-group">
+    <div class="lower-third ani-hidden" id="ui-lt-group">
         <div class="lt-main" id="val-lt-main">NOMBRE</div>
         <div class="lt-sub" id="val-lt-sub">CARGO</div>
     </div>
 
-    <div class="top-left-box" id="ui-main-group">
+    <div class="top-left-box">
         <div class="live-row">
             <div class="live-status" id="ui-live-badge">EN VIVO</div>
             <div class="location-box" id="ui-location-box">TEPIC</div>
@@ -95,11 +97,11 @@
         </div>
     </div>
 
-    <div class="bottom-container" id="ui-bottom-bar">
+    <div class="bottom-container">
         <div class="brand-label" id="ui-brand">ELRIVERATV</div>
         <div class="clock-ticker" id="ui-clock-box">
             <div class="time-row"><span id="ui-time-main">00:00:00</span><span id="ui-time-ampm" style="margin-left:5px; font-size:18px">AM</span></div>
-            <div id="ui-date-box" style="font-size:11px; text-transform:uppercase; letter-spacing:1px;">FECHA</div>
+            <div id="ui-date-box" style="font-size:11px; text-transform:uppercase; letter-spacing:1px">FECHA</div>
         </div>
         <div class="ticker-wrapper" id="ui-ticker-wrapper">
             <div class="ticker-content" id="ui-ticker-content">
@@ -130,7 +132,7 @@
         db.on('value', (snapshot) => {
             const data = snapshot.val() || {};
             
-            // 1. FONDOS Y COLORES BASE
+            // 1. ESTILOS INDEPENDIENTES
             if(data.bgLT) document.documentElement.style.setProperty('--bg-lt', hexToRgba(data.bgLT, data.opLT || 0.85));
             if(data.bgInfo) document.documentElement.style.setProperty('--bg-info', hexToRgba(data.bgInfo, data.opInfo || 0.85));
             if(data.bgTicker) document.documentElement.style.setProperty('--bg-ticker', hexToRgba(data.bgTicker, data.opTicker || 0.85));
@@ -139,16 +141,7 @@
             document.documentElement.style.setProperty('--primary', data.colorPrimary || '#4A148C');
             document.documentElement.style.setProperty('--accent', data.colorAccent || '#E91E63');
 
-            // 2. COLORES DE TEXTO (CORREGIDO: Solo cambian si el panel los envía)
-            if(data.colorTextLT) document.getElementById('val-lt-main').style.color = data.colorTextLT;
-            if(data.colorTextInfo) document.getElementById('val-info-title').style.color = data.colorTextInfo;
-            if(data.colorTextTicker) {
-                document.getElementById('val-ticker-1').style.color = data.colorTextTicker;
-                document.getElementById('val-ticker-2').style.color = data.colorTextTicker;
-            }
-            if(data.colorTextClock) document.getElementById('ui-clock-box').style.color = data.colorTextClock;
-
-            // 3. TAMAÑOS
+            // 2. TAMAÑOS Y COLORES
             if(data.sizeLTMain) document.getElementById('val-lt-main').style.fontSize = data.sizeLTMain + "px";
             if(data.sizeInfoTitle) document.getElementById('val-info-title').style.fontSize = data.sizeInfoTitle + "px";
             if(data.sizeTicker) {
@@ -157,29 +150,39 @@
             }
             if(data.sizeClock) document.getElementById('ui-time-main').style.fontSize = data.sizeClock + "px";
 
-            // 4. VISIBILIDAD INDEPENDIENTE
-            document.getElementById('ui-live-badge').classList.toggle('element-hidden-hide', data.showLive === 'false');
-            document.getElementById('ui-location-box').classList.toggle('element-hidden-hide', data.showLocation === 'false');
-            document.getElementById('ui-temp-box').classList.toggle('element-hidden-hide', data.showTemp === 'false');
-            document.getElementById('ui-weather-details').classList.toggle('element-hidden', data.showTemp === 'false');
-            document.getElementById('ui-brand').classList.toggle('element-hidden-hide', data.showBrand === 'false');
-            document.getElementById('ui-clock-box').classList.toggle('element-hidden-hide', data.showTime === 'false');
-            document.getElementById('ui-ticker-wrapper').classList.toggle('element-hidden-hide', data.showWeather === 'false');
-            document.getElementById('ui-lt-group').classList.toggle('hidden-left', data.showLowerThird !== 'true');
-            document.getElementById('ui-info-center').classList.toggle('info-hidden', data.showInfoCenter !== 'true');
+            if(data.colorTextLT) document.getElementById('val-lt-main').style.color = data.colorTextLT;
+            if(data.colorTextInfo) document.getElementById('val-info-title').style.color = data.colorTextInfo;
+            if(data.colorTextTicker) {
+                document.getElementById('val-ticker-1').style.color = data.colorTextTicker;
+                document.getElementById('val-ticker-2').style.color = data.colorTextTicker;
+            }
+            if(data.colorTextClock) document.getElementById('ui-clock-box').style.color = data.colorTextClock;
 
-            // 5. VELOCIDAD TICKER (Slider 1 = 120s Lento | Slider 100 = 20s Rápido)
+            // 3. VISIBILIDAD (Corregida)
+            document.getElementById('ui-live-badge').classList.toggle('hide-now', data.showLive === 'false');
+            document.getElementById('ui-location-box').classList.toggle('hide-now', data.showLocation === 'false');
+            document.getElementById('ui-temp-box').classList.toggle('hide-now', data.showTemp === 'false');
+            document.getElementById('ui-brand').classList.toggle('hide-now', data.showBrand === 'false');
+            document.getElementById('ui-clock-box').classList.toggle('hide-now', data.showTime === 'false');
+            document.getElementById('ui-ticker-wrapper').classList.toggle('hide-now', data.showWeather === 'false');
+
+            // Animaciones
+            document.getElementById('ui-weather-details').classList.toggle('ani-hidden', data.showTemp === 'false');
+            document.getElementById('ui-lt-group').classList.toggle('ani-hidden', data.showLowerThird !== 'true');
+            document.getElementById('ui-info-center').classList.toggle('ani-hidden', data.showInfoCenter !== 'true');
+
+            // 4. TICKER (Velocidad real suave)
             const currentTicker = (data.weatherText || "BIENVENIDOS...").toUpperCase();
-            if (currentTicker !== lastTickerText || data.tickerSpeed !== undefined) {
+            if (currentTicker !== lastTickerText || data.tickerSpeed) {
                 lastTickerText = currentTicker;
                 document.getElementById('val-ticker-1').innerText = currentTicker + "  •  ";
                 document.getElementById('val-ticker-2').innerText = currentTicker + "  •  ";
                 let speedInput = parseInt(data.tickerSpeed) || 50;
-                let duration = 121 - speedInput; 
+                let duration = 150 - speedInput; // 149s a 50s
                 document.getElementById('ui-ticker-content').style.animationDuration = duration + "s";
             }
 
-            // Actualización de textos
+            // Contenidos
             document.getElementById('val-lt-main').innerText = (data.ltMain || "").toUpperCase();
             document.getElementById('val-lt-sub').innerText = (data.ltSub || "").toUpperCase();
             document.getElementById('val-info-title').innerText = (data.infoTitle || "").toUpperCase();
@@ -187,7 +190,7 @@
             document.getElementById('ui-location-box').innerText = (data.location || "TEPIC").toUpperCase();
         });
 
-        // Reloj 12h + Fecha con Año
+        // Reloj 12h + Fecha
         setInterval(() => {
             const now = new Date();
             let h = now.getHours(), m = now.getMinutes().toString().padStart(2, '0'), s = now.getSeconds().toString().padStart(2, '0');
@@ -195,7 +198,6 @@
             h = h % 12 || 12; 
             document.getElementById('ui-time-main').innerText = `${h.toString().padStart(2, '0')}:${m}:${s}`;
             document.getElementById('ui-time-ampm').innerText = ampm;
-
             const options = { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' };
             document.getElementById('ui-date-box').innerText = now.toLocaleDateString('es-MX', options).toUpperCase();
         }, 1000);
