@@ -2,7 +2,7 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>Broadcast Switcher - elriveratv</title>
+    <title>Broadcast Switcher PRO - elriveratv</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&family=Oswald:wght@500;700&display=swap');
 
@@ -14,28 +14,33 @@
             --green: #00ff88;
             --text: #ffffff;
             --panel-border: #2d3142;
+            --modal-bg: rgba(11, 13, 20, 0.98);
         }
 
-        body { background-color: var(--bg); color: var(--text); font-family: 'Montserrat', sans-serif; margin: 0; padding: 20px; }
+        body { background-color: var(--bg); color: var(--text); font-family: 'Montserrat', sans-serif; margin: 0; padding: 20px; overflow-x: hidden; }
         .dashboard { max-width: 1000px; margin: 0 auto; }
         
         .main-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 3px solid var(--primary); padding-bottom: 10px; margin-bottom: 20px; }
         .main-header h1 { font-family: 'Oswald', sans-serif; margin: 0; letter-spacing: 2px; color: var(--accent); }
         
+        .header-controls { display: flex; align-items: center; gap: 20px; }
+        .btn-settings { 
+            background: var(--card); border: 1px solid var(--panel-border); color: white; 
+            padding: 8px 15px; border-radius: 5px; cursor: pointer; font-weight: bold; font-size: 0.8rem;
+            transition: 0.3s;
+        }
+        .btn-settings:hover { background: var(--primary); }
+
         .reference-clock { text-align: right; font-family: 'Oswald', sans-serif; }
         #ref-time { font-size: 1.6rem; color: #fff; line-height: 1; }
         #ref-date { font-size: 0.8rem; color: #888; text-transform: uppercase; margin-top: 4px; display: block; }
 
-        /* --- SECCIÓN SWITCHER (BOTONES CUADRADOS) --- */
+        /* --- SECCIÓN SWITCHER --- */
         .switcher-grid { 
             display: grid; 
             grid-template-columns: repeat(auto-fill, minmax(110px, 1fr)); 
-            gap: 15px; 
-            background: #11141f; 
-            padding: 25px; 
-            border-radius: 12px; 
-            border: 2px solid var(--panel-border);
-            margin-bottom: 30px;
+            gap: 15px; background: #11141f; padding: 25px; border-radius: 12px; 
+            border: 2px solid var(--panel-border); margin-bottom: 30px;
             box-shadow: inset 0 0 30px rgba(0,0,0,0.7);
         }
 
@@ -45,19 +50,14 @@
         .sw-btn {
             width: 75px; height: 75px;
             background: linear-gradient(145deg, #333847, #1a1d26);
-            border: 3px solid #111;
-            border-radius: 10px;
-            cursor: pointer;
-            position: relative;
+            border: 3px solid #111; border-radius: 10px; cursor: pointer;
             display: flex; align-items: center; justify-content: center;
-            transition: all 0.2s;
-            box-shadow: 4px 4px 10px rgba(0,0,0,0.5), inset 1px 1px 2px rgba(255,255,255,0.1);
+            transition: all 0.2s; box-shadow: 4px 4px 10px rgba(0,0,0,0.5);
         }
 
         .sw-led { width: 12px; height: 12px; background: #400; border-radius: 50%; border: 1px solid #000; transition: all 0.3s; }
-
-        .sw-btn.active { border-color: var(--green); box-shadow: 0 0 15px rgba(0, 255, 136, 0.2); }
-        .sw-btn.active .sw-led { background: var(--green); box-shadow: 0 0 10px var(--green), 0 0 20px var(--green); }
+        .sw-btn.active { border-color: var(--green); }
+        .sw-btn.active .sw-led { background: var(--green); box-shadow: 0 0 10px var(--green); }
 
         /* --- SECCIÓN EDITOR --- */
         .editor-section { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; }
@@ -65,14 +65,29 @@
         .edit-card h3 { font-size: 0.75rem; margin: 0 0 15px 0; color: var(--accent); text-transform: uppercase; border-bottom: 1px solid #2d3142; padding-bottom: 5px; }
 
         label { display: block; font-size: 0.6rem; margin: 10px 0 5px 0; color: #888; font-weight: bold; }
-        input[type="text"], input[type="color"], textarea { 
+        input[type="text"], input[type="color"], input[type="range"], textarea { 
             width: 100%; background: #090b10; border: 1px solid #333; color: #fff; padding: 10px; 
             border-radius: 5px; box-sizing: border-box; font-family: inherit; font-size: 0.85rem; 
         }
-        
-        #inputNews { min-height: 45px; overflow-y: hidden; resize: none; transition: height 0.2s ease; }
-        textarea { height: 60px; resize: none; }
-        .color-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+
+        /* --- MODAL DE AJUSTES --- */
+        .modal-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.8); display: none; justify-content: center; align-items: center;
+            z-index: 1000; backdrop-filter: blur(5px);
+        }
+        .modal-content {
+            background: var(--card); width: 90%; max-width: 600px; padding: 30px;
+            border-radius: 15px; border: 2px solid var(--primary);
+            max-height: 80vh; overflow-y: auto;
+        }
+        .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+        .close-modal { color: var(--accent); font-size: 2rem; cursor: pointer; line-height: 1; }
+
+        .settings-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+        .setting-group { background: #0b0d14; padding: 15px; border-radius: 8px; }
+        .setting-group h4 { margin: 0 0 10px 0; font-size: 0.7rem; color: var(--green); text-transform: uppercase; }
+
     </style>
 </head>
 <body>
@@ -80,72 +95,98 @@
 <div class="dashboard">
     <div class="main-header">
         <h1>ELRIVERATV <span style="font-weight: 300; font-size: 0.8rem; color: #888;">MASTER SWITCHER</span></h1>
-        <div class="reference-clock">
-            <span id="ref-time">00:00:00 AM</span>
-            <span id="ref-date">FECHA</span>
+        
+        <div class="header-controls">
+            <button class="btn-settings" onclick="openModal()">⚙️ CONFIG. ESTILO</button>
+            <div class="reference-clock">
+                <span id="ref-time">00:00:00 AM</span>
+                <span id="ref-date">FECHA</span>
+            </div>
         </div>
     </div>
 
     <div class="switcher-grid">
-        <div class="sw-unit">
-            <span class="sw-label">LIVE BADGE</span>
-            <button class="sw-btn" id="btn-showLive" onclick="toggleBtn('showLive')"><div class="sw-led"></div></button>
-        </div>
-        <div class="sw-unit">
-            <span class="sw-label">LOCATION</span>
-            <button class="sw-btn" id="btn-showLocation" onclick="toggleBtn('showLocation')"><div class="sw-led"></div></button>
-        </div>
-        <div class="sw-unit">
-            <span class="sw-label">TEMPERATURE</span>
-            <button class="sw-btn" id="btn-showTemp" onclick="toggleBtn('showTemp')"><div class="sw-led"></div></button>
-        </div>
-        <div class="sw-unit">
-            <span class="sw-label">LOWER THIRD</span>
-            <button class="sw-btn" id="btn-showLowerThird" onclick="toggleBtn('showLowerThird')"><div class="sw-led"></div></button>
-        </div>
-        <div class="sw-unit">
-            <span class="sw-label">INFO CENTER</span>
-            <button class="sw-btn" id="btn-showInfoCenter" onclick="toggleBtn('showInfoCenter')"><div class="sw-led"></div></button>
-        </div>
-        <div class="sw-unit">
-            <span class="sw-label">TICKER BAR</span>
-            <button class="sw-btn" id="btn-showWeather" onclick="toggleBtn('showWeather')"><div class="sw-led"></div></button>
-        </div>
-        <div class="sw-unit">
-            <span class="sw-label">DATE/CLOCK</span>
-            <button class="sw-btn" id="btn-showClock" onclick="toggleBtn('showClock')"><div class="sw-led"></div></button>
-        </div>
+        <div class="sw-unit"><span class="sw-label">LIVE BADGE</span><button class="sw-btn" id="btn-showLive" onclick="toggleBtn('showLive')"><div class="sw-led"></div></button></div>
+        <div class="sw-unit"><span class="sw-label">LOCATION</span><button class="sw-btn" id="btn-showLocation" onclick="toggleBtn('showLocation')"><div class="sw-led"></div></button></div>
+        <div class="sw-unit"><span class="sw-label">TEMPERATURE</span><button class="sw-btn" id="btn-showTemp" onclick="toggleBtn('showTemp')"><div class="sw-led"></div></button></div>
+        <div class="sw-unit"><span class="sw-label">LOWER THIRD</span><button class="sw-btn" id="btn-showLowerThird" onclick="toggleBtn('showLowerThird')"><div class="sw-led"></div></button></div>
+        <div class="sw-unit"><span class="sw-label">INFO CENTER</span><button class="sw-btn" id="btn-showInfoCenter" onclick="toggleBtn('showInfoCenter')"><div class="sw-led"></div></button></div>
+        <div class="sw-unit"><span class="sw-label">TICKER BAR</span><button class="sw-btn" id="btn-showWeather" onclick="toggleBtn('showWeather')"><div class="sw-led"></div></button></div>
+        <div class="sw-unit"><span class="sw-label">DATE/CLOCK</span><button class="sw-btn" id="btn-showClock" onclick="toggleBtn('showClock')"><div class="sw-led"></div></button></div>
     </div>
 
     <div class="editor-section">
         <div class="edit-card">
-            <h3>Preparación de Textos</h3>
-            <label>UBICACIÓN</label>
-            <input type="text" id="inputLoc" onkeyup="send('location', this.value)">
-            <label>NOMBRE INVITADO</label>
-            <input type="text" id="inputLTMain" onkeyup="send('ltMain', this.value)">
-            <label>DESCRIPCIÓN</label>
-            <input type="text" id="inputLTSub" onkeyup="send('ltSub', this.value)">
+            <h3>Textos Principales</h3>
+            <label>UBICACIÓN</label><input type="text" id="inputLoc" onkeyup="send('location', this.value)">
+            <label>NOMBRE INVITADO</label><input type="text" id="inputLTMain" onkeyup="send('ltMain', this.value)">
+            <label>DESCRIPCIÓN</label><input type="text" id="inputLTSub" onkeyup="send('ltSub', this.value)">
         </div>
 
         <div class="edit-card">
-            <h3>Contenido Info Center</h3>
-            <label>TÍTULO</label>
-            <input type="text" id="inputInfoTitle" onkeyup="send('infoTitle', this.value)">
-            <label>CUERPO</label>
-            <textarea id="inputInfoBody" onkeyup="send('infoBody', this.value)"></textarea>
+            <h3>Info Center</h3>
+            <label>TÍTULO</label><input type="text" id="inputInfoTitle" onkeyup="send('infoTitle', this.value)">
+            <label>CUERPO</label><textarea id="inputInfoBody" onkeyup="send('infoBody', this.value)"></textarea>
         </div>
 
         <div class="edit-card">
-            <h3>Marquesina Adaptable</h3>
-            <label>NOTICIAS</label>
-            <textarea id="inputNews" oninput="autoExpand(this); send('weatherText', this.value)" placeholder="Escribe aquí las noticias..."></textarea>
-            
-            <div class="color-row">
+            <h3>Marquesina & Colores</h3>
+            <label>NOTICIAS</label><textarea id="inputNews" oninput="autoExpand(this); send('weatherText', this.value)"></textarea>
+            <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px; margin-top:10px;">
                 <div><label>PRIMARIO</label><input type="color" id="colorPrimary" onchange="send('colorPrimary', this.value)"></div>
                 <div><label>ACENTO</label><input type="color" id="colorAccent" onchange="send('colorAccent', this.value)"></div>
             </div>
         </div>
+    </div>
+</div>
+
+<div class="modal-overlay" id="settingsModal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2 style="font-family: Oswald; color: var(--accent); margin:0;">AJUSTES DE DISEÑO</h2>
+            <span class="close-modal" onclick="closeModal()">&times;</span>
+        </div>
+        
+        <div class="settings-grid">
+            <div class="setting-group">
+                <h4>Tamaño de Texto (px)</h4>
+                <label>L3 Nombre</label>
+                <input type="range" min="20" max="60" id="sizeLTMain" oninput="send('sizeLTMain', this.value)">
+                <label>L3 Subtítulo</label>
+                <input type="range" min="12" max="30" id="sizeLTSub" oninput="send('sizeLTSub', this.value)">
+                <label>Info Center Título</label>
+                <input type="range" min="20" max="50" id="sizeInfoTitle" oninput="send('sizeInfoTitle', this.value)">
+                <label>Ticker Texto</label>
+                <input type="range" min="14" max="35" id="sizeTicker" oninput="send('sizeTicker', this.value)">
+            </div>
+
+            <div class="setting-group">
+                <h4>Opacidad / Transparencia</h4>
+                <label>Fondo General (Glass)</label>
+                <input type="range" min="0" max="100" id="opGlass" oninput="send('opGlass', this.value/100)">
+                <label>Opacidad Ticker</label>
+                <input type="range" min="0" max="100" id="opTicker" oninput="send('opTicker', this.value/100)">
+                <label>Opacidad Info Center</label>
+                <input type="range" min="0" max="100" id="opInfo" oninput="send('opInfo', this.value/100)">
+            </div>
+
+            <div class="setting-group">
+                <h4>Colores de Texto</h4>
+                <label>Color L3 Principal</label>
+                <input type="color" id="colorTextLT" onchange="send('colorTextLT', this.value)">
+                <label>Color Info Center</label>
+                <input type="color" id="colorTextInfo" onchange="send('colorTextInfo', this.value)">
+            </div>
+
+            <div class="setting-group">
+                <h4>Velocidad Ticker</h4>
+                <label>Duración (Segundos)</label>
+                <input type="range" min="5" max="60" id="tickerSpeed" oninput="send('tickerSpeed', this.value)">
+                <p style="font-size:0.5rem; color:#666; margin-top:5px;">* Menos es más rápido</p>
+            </div>
+        </div>
+        
+        <button class="btn-settings" style="width:100%; margin-top:20px; padding:15px;" onclick="closeModal()">GUARDAR Y CERRAR</button>
     </div>
 </div>
 
@@ -166,6 +207,9 @@
         db.update({ [key]: newState });
     }
 
+    function openModal() { document.getElementById('settingsModal').style.display = 'flex'; }
+    function closeModal() { document.getElementById('settingsModal').style.display = 'none'; }
+
     function autoExpand(field) {
         field.style.height = 'inherit';
         field.style.height = field.scrollHeight + 'px';
@@ -175,28 +219,35 @@
         const data = snapshot.val() || {};
         currentStates = data;
 
-        // Actualización de LEDs y estados
+        // LEDs
         updateBtnUI('showLive', data.showLive !== 'false');
         updateBtnUI('showLocation', data.showLocation !== 'false');
-        updateBtnUI('showTemp', data.showTemp !== 'false'); // Sincronización Temperatura
+        updateBtnUI('showTemp', data.showTemp !== 'false');
         updateBtnUI('showLowerThird', data.showLowerThird === 'true');
         updateBtnUI('showInfoCenter', data.showInfoCenter === 'true');
         updateBtnUI('showWeather', data.showWeather !== 'false');
         updateBtnUI('showClock', data.showClock !== 'false');
 
-        // Sincronización de inputs
+        // Inputs texto
         document.getElementById('inputLoc').value = data.location || "";
         document.getElementById('inputLTMain').value = data.ltMain || "";
         document.getElementById('inputLTSub').value = data.ltSub || "";
         document.getElementById('inputInfoTitle').value = data.infoTitle || "";
         document.getElementById('inputInfoBody').value = data.infoBody || "";
+        document.getElementById('inputNews').value = data.weatherText || "";
         
-        const newsField = document.getElementById('inputNews');
-        newsField.value = data.weatherText || "";
-        autoExpand(newsField);
-
+        // Colores
         document.getElementById('colorPrimary').value = data.colorPrimary || "#4A148C";
         document.getElementById('colorAccent').value = data.colorAccent || "#E91E63";
+
+        // Sincronizar Modal (Sliders y Colors del modal)
+        if(data.sizeLTMain) document.getElementById('sizeLTMain').value = data.sizeLTMain;
+        if(data.sizeLTSub) document.getElementById('sizeLTSub').value = data.sizeLTSub;
+        if(data.sizeInfoTitle) document.getElementById('sizeInfoTitle').value = data.sizeInfoTitle;
+        if(data.sizeTicker) document.getElementById('sizeTicker').value = data.sizeTicker;
+        if(data.opGlass) document.getElementById('opGlass').value = data.opGlass * 100;
+        if(data.colorTextLT) document.getElementById('colorTextLT').value = data.colorTextLT;
+        if(data.tickerSpeed) document.getElementById('tickerSpeed').value = data.tickerSpeed;
     });
 
     function updateBtnUI(id, isActive) {
