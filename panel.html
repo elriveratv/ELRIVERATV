@@ -14,11 +14,10 @@
             --green: #00ff88;
             --text: #ffffff;
             --panel-border: #2d3142;
-            --modal-bg: rgba(11, 13, 20, 0.98);
         }
 
         body { background-color: var(--bg); color: var(--text); font-family: 'Montserrat', sans-serif; margin: 0; padding: 20px; overflow-x: hidden; }
-        .dashboard { max-width: 1000px; margin: 0 auto; }
+        .dashboard { max-width: 1100px; margin: 0 auto; }
         
         .main-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 3px solid var(--primary); padding-bottom: 10px; margin-bottom: 20px; }
         .main-header h1 { font-family: 'Oswald', sans-serif; margin: 0; letter-spacing: 2px; color: var(--accent); }
@@ -29,13 +28,13 @@
             padding: 8px 15px; border-radius: 5px; cursor: pointer; font-weight: bold; font-size: 0.8rem;
             transition: 0.3s;
         }
-        .btn-settings:hover { background: var(--primary); }
+        .btn-settings:hover { background: var(--primary); border-color: var(--green); }
 
         .reference-clock { text-align: right; font-family: 'Oswald', sans-serif; }
         #ref-time { font-size: 1.6rem; color: #fff; line-height: 1; }
         #ref-date { font-size: 0.8rem; color: #888; text-transform: uppercase; margin-top: 4px; display: block; }
 
-        /* --- SECCIÓN SWITCHER --- */
+        /* --- SWITCHER GRID (TODOS LOS BOTONES RESTAURADOS) --- */
         .switcher-grid { 
             display: grid; 
             grid-template-columns: repeat(auto-fill, minmax(110px, 1fr)); 
@@ -45,10 +44,10 @@
         }
 
         .sw-unit { display: flex; flex-direction: column; align-items: center; gap: 12px; }
-        .sw-label { font-size: 0.6rem; font-weight: 700; text-transform: uppercase; color: #666; text-align: center; letter-spacing: 1px; }
+        .sw-label { font-size: 0.55rem; font-weight: 700; text-transform: uppercase; color: #888; text-align: center; letter-spacing: 1px; height: 20px; }
 
         .sw-btn {
-            width: 75px; height: 75px;
+            width: 70px; height: 70px;
             background: linear-gradient(145deg, #333847, #1a1d26);
             border: 3px solid #111; border-radius: 10px; cursor: pointer;
             display: flex; align-items: center; justify-content: center;
@@ -57,9 +56,9 @@
 
         .sw-led { width: 12px; height: 12px; background: #400; border-radius: 50%; border: 1px solid #000; transition: all 0.3s; }
         .sw-btn.active { border-color: var(--green); }
-        .sw-btn.active .sw-led { background: var(--green); box-shadow: 0 0 10px var(--green); }
+        .sw-btn.active .sw-led { background: var(--green); box-shadow: 0 0 10px var(--green), 0 0 20px var(--green); }
 
-        /* --- SECCIÓN EDITOR --- */
+        /* --- EDITOR SECTION --- */
         .editor-section { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; }
         .edit-card { background: var(--card); padding: 20px; border-radius: 8px; border: 1px solid var(--panel-border); }
         .edit-card h3 { font-size: 0.75rem; margin: 0 0 15px 0; color: var(--accent); text-transform: uppercase; border-bottom: 1px solid #2d3142; padding-bottom: 5px; }
@@ -69,24 +68,22 @@
             width: 100%; background: #090b10; border: 1px solid #333; color: #fff; padding: 10px; 
             border-radius: 5px; box-sizing: border-box; font-family: inherit; font-size: 0.85rem; 
         }
+        textarea { height: 60px; resize: none; }
 
-        /* --- MODAL DE AJUSTES --- */
+        /* --- MODAL AJUSTES --- */
         .modal-overlay {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.8); display: none; justify-content: center; align-items: center;
-            z-index: 1000; backdrop-filter: blur(5px);
+            background: rgba(0,0,0,0.85); display: none; justify-content: center; align-items: center;
+            z-index: 1000; backdrop-filter: blur(8px);
         }
         .modal-content {
-            background: var(--card); width: 90%; max-width: 600px; padding: 30px;
+            background: var(--card); width: 95%; max-width: 700px; padding: 30px;
             border-radius: 15px; border: 2px solid var(--primary);
-            max-height: 80vh; overflow-y: auto;
+            max-height: 90vh; overflow-y: auto;
         }
-        .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
-        .close-modal { color: var(--accent); font-size: 2rem; cursor: pointer; line-height: 1; }
-
         .settings-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
-        .setting-group { background: #0b0d14; padding: 15px; border-radius: 8px; }
-        .setting-group h4 { margin: 0 0 10px 0; font-size: 0.7rem; color: var(--green); text-transform: uppercase; }
+        .setting-group { background: #0b0d14; padding: 15px; border-radius: 8px; border: 1px solid #222; }
+        .setting-group h4 { margin: 0 0 15px 0; font-size: 0.7rem; color: var(--green); text-transform: uppercase; border-bottom: 1px solid #333; padding-bottom: 5px; }
 
     </style>
 </head>
@@ -97,7 +94,7 @@
         <h1>ELRIVERATV <span style="font-weight: 300; font-size: 0.8rem; color: #888;">MASTER SWITCHER</span></h1>
         
         <div class="header-controls">
-            <button class="btn-settings" onclick="openModal()">⚙️ CONFIG. ESTILO</button>
+            <button class="btn-settings" onclick="openModal()">⚙️ AJUSTES DE ESTILO</button>
             <div class="reference-clock">
                 <span id="ref-time">00:00:00 AM</span>
                 <span id="ref-date">FECHA</span>
@@ -111,30 +108,32 @@
         <div class="sw-unit"><span class="sw-label">TEMPERATURE</span><button class="sw-btn" id="btn-showTemp" onclick="toggleBtn('showTemp')"><div class="sw-led"></div></button></div>
         <div class="sw-unit"><span class="sw-label">LOWER THIRD</span><button class="sw-btn" id="btn-showLowerThird" onclick="toggleBtn('showLowerThird')"><div class="sw-led"></div></button></div>
         <div class="sw-unit"><span class="sw-label">INFO CENTER</span><button class="sw-btn" id="btn-showInfoCenter" onclick="toggleBtn('showInfoCenter')"><div class="sw-led"></div></button></div>
+        
+        <div class="sw-unit"><span class="sw-label">BRAND LOGO</span><button class="sw-btn" id="btn-showBrand" onclick="toggleBtn('showBrand')"><div class="sw-led"></div></button></div>
+        <div class="sw-unit"><span class="sw-label">CLOCK / DATE</span><button class="sw-btn" id="btn-showTime" onclick="toggleBtn('showTime')"><div class="sw-led"></div></button></div>
         <div class="sw-unit"><span class="sw-label">TICKER BAR</span><button class="sw-btn" id="btn-showWeather" onclick="toggleBtn('showWeather')"><div class="sw-led"></div></button></div>
-        <div class="sw-unit"><span class="sw-label">DATE/CLOCK</span><button class="sw-btn" id="btn-showClock" onclick="toggleBtn('showClock')"><div class="sw-led"></div></button></div>
     </div>
 
     <div class="editor-section">
         <div class="edit-card">
-            <h3>Textos Principales</h3>
-            <label>UBICACIÓN</label><input type="text" id="inputLoc" onkeyup="send('location', this.value)">
-            <label>NOMBRE INVITADO</label><input type="text" id="inputLTMain" onkeyup="send('ltMain', this.value)">
-            <label>DESCRIPCIÓN</label><input type="text" id="inputLTSub" onkeyup="send('ltSub', this.value)">
+            <h3>Textos Overlay</h3>
+            <label>UBICACIÓN (CIUDAD)</label><input type="text" id="inputLoc" onkeyup="send('location', this.value)">
+            <label>L3: NOMBRE</label><input type="text" id="inputLTMain" onkeyup="send('ltMain', this.value)">
+            <label>L3: CARGO</label><input type="text" id="inputLTSub" onkeyup="send('ltSub', this.value)">
         </div>
 
         <div class="edit-card">
             <h3>Info Center</h3>
             <label>TÍTULO</label><input type="text" id="inputInfoTitle" onkeyup="send('infoTitle', this.value)">
-            <label>CUERPO</label><textarea id="inputInfoBody" onkeyup="send('infoBody', this.value)"></textarea>
+            <label>CUERPO DE NOTICIA</label><textarea id="inputInfoBody" onkeyup="send('infoBody', this.value)"></textarea>
         </div>
 
         <div class="edit-card">
-            <h3>Marquesina & Colores</h3>
-            <label>NOTICIAS</label><textarea id="inputNews" oninput="autoExpand(this); send('weatherText', this.value)"></textarea>
+            <h3>Marquesina Dinámica</h3>
+            <label>TEXTO DEL TICKER</label><textarea id="inputNews" oninput="send('weatherText', this.value)"></textarea>
             <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px; margin-top:10px;">
-                <div><label>PRIMARIO</label><input type="color" id="colorPrimary" onchange="send('colorPrimary', this.value)"></div>
-                <div><label>ACENTO</label><input type="color" id="colorAccent" onchange="send('colorAccent', this.value)"></div>
+                <div><label>COLOR PRIMARIO</label><input type="color" id="colorPrimary" onchange="send('colorPrimary', this.value)"></div>
+                <div><label>COLOR ACENTO</label><input type="color" id="colorAccent" onchange="send('colorAccent', this.value)"></div>
             </div>
         </div>
     </div>
@@ -142,51 +141,40 @@
 
 <div class="modal-overlay" id="settingsModal">
     <div class="modal-content">
-        <div class="modal-header">
-            <h2 style="font-family: Oswald; color: var(--accent); margin:0;">AJUSTES DE DISEÑO</h2>
-            <span class="close-modal" onclick="closeModal()">&times;</span>
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
+            <h2 style="font-family: Oswald; color: var(--accent); margin:0;">CONFIGURACIÓN DE ESTILOS</h2>
+            <span style="color:white; font-size:2rem; cursor:pointer;" onclick="closeModal()">&times;</span>
         </div>
         
         <div class="settings-grid">
             <div class="setting-group">
-                <h4>Tamaño de Texto (px)</h4>
-                <label>L3 Nombre</label>
-                <input type="range" min="20" max="60" id="sizeLTMain" oninput="send('sizeLTMain', this.value)">
-                <label>L3 Subtítulo</label>
-                <input type="range" min="12" max="30" id="sizeLTSub" oninput="send('sizeLTSub', this.value)">
-                <label>Info Center Título</label>
-                <input type="range" min="20" max="50" id="sizeInfoTitle" oninput="send('sizeInfoTitle', this.value)">
-                <label>Ticker Texto</label>
-                <input type="range" min="14" max="35" id="sizeTicker" oninput="send('sizeTicker', this.value)">
+                <h4>Tamaños de Fuente</h4>
+                <label>L3 Nombre</label><input type="range" min="15" max="60" id="sizeLTMain" oninput="send('sizeLTMain', this.value)">
+                <label>L3 Subtítulo</label><input type="range" min="10" max="30" id="sizeLTSub" oninput="send('sizeLTSub', this.value)">
+                <label>Info Título</label><input type="range" min="15" max="50" id="sizeInfoTitle" oninput="send('sizeInfoTitle', this.value)">
+                <label>Ticker</label><input type="range" min="12" max="35" id="sizeTicker" oninput="send('sizeTicker', this.value)">
             </div>
 
             <div class="setting-group">
-                <h4>Opacidad / Transparencia</h4>
-                <label>Fondo General (Glass)</label>
-                <input type="range" min="0" max="100" id="opGlass" oninput="send('opGlass', this.value/100)">
-                <label>Opacidad Ticker</label>
-                <input type="range" min="0" max="100" id="opTicker" oninput="send('opTicker', this.value/100)">
-                <label>Opacidad Info Center</label>
-                <input type="range" min="0" max="100" id="opInfo" oninput="send('opInfo', this.value/100)">
+                <h4>Transparencias (Alpha)</h4>
+                <label>Opacidad General (Glass)</label><input type="range" min="0" max="100" id="opGlass" oninput="send('opGlass', this.value/100)">
+                <label>Opacidad Ticker</label><input type="range" min="0" max="100" id="opTicker" oninput="send('opTicker', this.value/100)">
             </div>
 
             <div class="setting-group">
-                <h4>Colores de Texto</h4>
-                <label>Color L3 Principal</label>
-                <input type="color" id="colorTextLT" onchange="send('colorTextLT', this.value)">
-                <label>Color Info Center</label>
-                <input type="color" id="colorTextInfo" onchange="send('colorTextInfo', this.value)">
+                <h4>Colores Especiales</h4>
+                <label>Texto Lower Third</label><input type="color" id="colorTextLT" onchange="send('colorTextLT', this.value)">
+                <label>Texto Info Center</label><input type="color" id="colorTextInfo" onchange="send('colorTextInfo', this.value)">
             </div>
 
             <div class="setting-group">
                 <h4>Velocidad Ticker</h4>
-                <label>Duración (Segundos)</label>
-                <input type="range" min="5" max="60" id="tickerSpeed" oninput="send('tickerSpeed', this.value)">
-                <p style="font-size:0.5rem; color:#666; margin-top:5px;">* Menos es más rápido</p>
+                <label>Segundos por vuelta</label><input type="range" min="5" max="60" id="tickerSpeed" oninput="send('tickerSpeed', this.value)">
+                <p style="font-size:0.5rem; color:#888;">* Valores bajos = más rápido</p>
             </div>
         </div>
         
-        <button class="btn-settings" style="width:100%; margin-top:20px; padding:15px;" onclick="closeModal()">GUARDAR Y CERRAR</button>
+        <button class="btn-settings" style="width:100%; margin-top:20px; padding:15px;" onclick="closeModal()">CERRAR Y APLICAR</button>
     </div>
 </div>
 
@@ -210,43 +198,33 @@
     function openModal() { document.getElementById('settingsModal').style.display = 'flex'; }
     function closeModal() { document.getElementById('settingsModal').style.display = 'none'; }
 
-    function autoExpand(field) {
-        field.style.height = 'inherit';
-        field.style.height = field.scrollHeight + 'px';
-    }
-
     db.on('value', (snapshot) => {
         const data = snapshot.val() || {};
         currentStates = data;
 
-        // LEDs
+        // Actualización de los 8 botones de visibilidad
         updateBtnUI('showLive', data.showLive !== 'false');
         updateBtnUI('showLocation', data.showLocation !== 'false');
         updateBtnUI('showTemp', data.showTemp !== 'false');
         updateBtnUI('showLowerThird', data.showLowerThird === 'true');
         updateBtnUI('showInfoCenter', data.showInfoCenter === 'true');
+        updateBtnUI('showBrand', data.showBrand !== 'false');
+        updateBtnUI('showTime', data.showTime !== 'false');
         updateBtnUI('showWeather', data.showWeather !== 'false');
-        updateBtnUI('showClock', data.showClock !== 'false');
 
-        // Inputs texto
+        // Sincronizar Inputs
         document.getElementById('inputLoc').value = data.location || "";
         document.getElementById('inputLTMain').value = data.ltMain || "";
         document.getElementById('inputLTSub').value = data.ltSub || "";
         document.getElementById('inputInfoTitle').value = data.infoTitle || "";
         document.getElementById('inputInfoBody').value = data.infoBody || "";
         document.getElementById('inputNews').value = data.weatherText || "";
-        
-        // Colores
         document.getElementById('colorPrimary').value = data.colorPrimary || "#4A148C";
         document.getElementById('colorAccent').value = data.colorAccent || "#E91E63";
 
-        // Sincronizar Modal (Sliders y Colors del modal)
+        // Sincronizar Sliders del Modal
         if(data.sizeLTMain) document.getElementById('sizeLTMain').value = data.sizeLTMain;
-        if(data.sizeLTSub) document.getElementById('sizeLTSub').value = data.sizeLTSub;
-        if(data.sizeInfoTitle) document.getElementById('sizeInfoTitle').value = data.sizeInfoTitle;
-        if(data.sizeTicker) document.getElementById('sizeTicker').value = data.sizeTicker;
         if(data.opGlass) document.getElementById('opGlass').value = data.opGlass * 100;
-        if(data.colorTextLT) document.getElementById('colorTextLT').value = data.colorTextLT;
         if(data.tickerSpeed) document.getElementById('tickerSpeed').value = data.tickerSpeed;
     });
 
