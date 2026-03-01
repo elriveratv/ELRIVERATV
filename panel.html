@@ -29,7 +29,7 @@
         /* --- SECCIÓN SWITCHER (BOTONES CUADRADOS) --- */
         .switcher-grid { 
             display: grid; 
-            grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); 
+            grid-template-columns: repeat(auto-fill, minmax(110px, 1fr)); 
             gap: 15px; 
             background: #11141f; 
             padding: 25px; 
@@ -43,7 +43,7 @@
         .sw-label { font-size: 0.6rem; font-weight: 700; text-transform: uppercase; color: #666; text-align: center; letter-spacing: 1px; }
 
         .sw-btn {
-            width: 80px; height: 80px;
+            width: 75px; height: 75px;
             background: linear-gradient(145deg, #333847, #1a1d26);
             border: 3px solid #111;
             border-radius: 10px;
@@ -70,14 +70,7 @@
             border-radius: 5px; box-sizing: border-box; font-family: inherit; font-size: 0.85rem; 
         }
         
-        /* Auto-ajuste para marquesina */
-        #inputNews { 
-            min-height: 45px;
-            overflow-y: hidden; 
-            resize: none; 
-            transition: height 0.2s ease;
-        }
-
+        #inputNews { min-height: 45px; overflow-y: hidden; resize: none; transition: height 0.2s ease; }
         textarea { height: 60px; resize: none; }
         .color-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
     </style>
@@ -101,6 +94,10 @@
         <div class="sw-unit">
             <span class="sw-label">LOCATION</span>
             <button class="sw-btn" id="btn-showLocation" onclick="toggleBtn('showLocation')"><div class="sw-led"></div></button>
+        </div>
+        <div class="sw-unit">
+            <span class="sw-label">TEMPERATURE</span>
+            <button class="sw-btn" id="btn-showTemp" onclick="toggleBtn('showTemp')"><div class="sw-led"></div></button>
         </div>
         <div class="sw-unit">
             <span class="sw-label">LOWER THIRD</span>
@@ -141,7 +138,7 @@
 
         <div class="edit-card">
             <h3>Marquesina Adaptable</h3>
-            <label>NOTICIAS (SE EXPANDE AL ESCRIBIR)</label>
+            <label>NOTICIAS</label>
             <textarea id="inputNews" oninput="autoExpand(this); send('weatherText', this.value)" placeholder="Escribe aquí las noticias..."></textarea>
             
             <div class="color-row">
@@ -169,31 +166,31 @@
         db.update({ [key]: newState });
     }
 
-    // Función para expandir el recuadro de noticias automáticamente
     function autoExpand(field) {
         field.style.height = 'inherit';
-        const height = field.scrollHeight;
-        field.style.height = height + 'px';
+        field.style.height = field.scrollHeight + 'px';
     }
 
     db.on('value', (snapshot) => {
         const data = snapshot.val() || {};
         currentStates = data;
 
+        // Actualización de LEDs y estados
         updateBtnUI('showLive', data.showLive !== 'false');
         updateBtnUI('showLocation', data.showLocation !== 'false');
+        updateBtnUI('showTemp', data.showTemp !== 'false'); // Sincronización Temperatura
         updateBtnUI('showLowerThird', data.showLowerThird === 'true');
         updateBtnUI('showInfoCenter', data.showInfoCenter === 'true');
         updateBtnUI('showWeather', data.showWeather !== 'false');
         updateBtnUI('showClock', data.showClock !== 'false');
 
+        // Sincronización de inputs
         document.getElementById('inputLoc').value = data.location || "";
         document.getElementById('inputLTMain').value = data.ltMain || "";
         document.getElementById('inputLTSub').value = data.ltSub || "";
         document.getElementById('inputInfoTitle').value = data.infoTitle || "";
         document.getElementById('inputInfoBody').value = data.infoBody || "";
         
-        // Sincronizar noticias y ajustar altura
         const newsField = document.getElementById('inputNews');
         newsField.value = data.weatherText || "";
         autoExpand(newsField);
@@ -204,8 +201,10 @@
 
     function updateBtnUI(id, isActive) {
         const btn = document.getElementById('btn-' + id);
-        if (isActive) btn.classList.add('active');
-        else btn.classList.remove('active');
+        if (btn) {
+            if (isActive) btn.classList.add('active');
+            else btn.classList.remove('active');
+        }
     }
 
     function updateReference() {
