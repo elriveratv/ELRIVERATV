@@ -8,9 +8,7 @@
         :root {
             --primary: #4A148C;
             --accent: #E91E63;
-            --glass-bg: rgba(0, 0, 0, 0.85);
             --white: #ffffff;
-            /* Variables para fondos independientes del panel */
             --bg-lt: rgba(74, 20, 140, 0.85);
             --bg-info: rgba(0, 0, 0, 0.85);
             --bg-ticker: rgba(0, 0, 0, 0.85);
@@ -26,73 +24,49 @@
         }
 
         /* --- GRUPO SUPERIOR --- */
-        .top-left-box {
-            position: absolute; top: 40px; left: 40px;
-            display: flex; flex-direction: column;
-            transition: all 0.8s cubic-bezier(0.16, 1, 0.3, 1);
-            z-index: 70;
-            width: fit-content;
-        }
-        .live-row { display: flex; align-items: stretch; margin-bottom: 4px; overflow: hidden; width: fit-content; }
-        
-        .live-status { background: var(--primary); padding: 8px 25px; font-weight: 700; text-transform: uppercase; font-size: 18px; letter-spacing: 2px; border-left: 8px solid var(--accent); white-space: nowrap; transition: 0.4s; }
-        .location-box { background: var(--glass-bg); padding: 8px 20px; font-size: 18px; font-weight: 400; border-left: 2px solid rgba(255,255,255,0.2); white-space: nowrap; transition: 0.4s; }
-        .temp-box { background: var(--accent); padding: 8px 20px; font-weight: 700; font-size: 18px; border-left: 1px solid rgba(255,255,255,0.3); white-space: nowrap; transition: 0.4s; }
+        .top-left-box { position: absolute; top: 40px; left: 40px; display: flex; flex-direction: column; z-index: 70; }
+        .live-row { display: flex; align-items: stretch; margin-bottom: 4px; width: fit-content; }
+        .live-status { background: var(--primary); padding: 8px 25px; font-weight: 700; text-transform: uppercase; font-size: 18px; letter-spacing: 2px; border-left: 8px solid var(--accent); white-space: nowrap; }
+        .location-box { background: rgba(0,0,0,0.8); padding: 8px 20px; font-size: 18px; font-weight: 400; border-left: 2px solid rgba(255,255,255,0.2); white-space: nowrap; }
+        .temp-box { background: var(--accent); padding: 8px 20px; font-weight: 700; font-size: 18px; border-left: 1px solid rgba(255,255,255,0.3); white-space: nowrap; }
 
-        /* --- FILA DETALLES CLIMA CON ANIMACIÓN --- */
         .weather-details-row { 
-            display: flex; 
-            align-items: stretch; 
-            margin-bottom: 4px; 
-            overflow: hidden; 
-            width: fit-content; 
+            display: flex; align-items: stretch; margin-bottom: 4px; overflow: hidden; width: fit-content; 
             transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.5s ease, max-height 0.6s ease;
-            opacity: 1;
-            transform: translateY(0);
-            max-height: 50px;
+            opacity: 1; transform: translateY(0); max-height: 50px;
         }
+        .weather-details-row.element-hidden { opacity: 0 !important; transform: translateY(-20px) !important; max-height: 0 !important; margin-bottom: 0 !important; pointer-events: none; }
+        .weather-info { background: rgba(0,0,0,0.8); padding: 6px 15px; font-size: 14px; font-weight: 500; border-left: 1px solid rgba(255,255,255,0.1); white-space: nowrap; display: flex; align-items: center; gap: 5px; }
 
-        .weather-details-row.element-hidden {
-            opacity: 0 !important;
-            transform: translateY(-20px) !important;
-            max-height: 0 !important;
-            margin-bottom: 0 !important;
-            pointer-events: none;
-        }
-        
-        .weather-info { background: var(--glass-bg); padding: 6px 15px; font-size: 14px; font-weight: 500; border-left: 1px solid rgba(255,255,255,0.1); white-space: nowrap; display: flex; align-items: center; gap: 5px; }
-        .weather-label { color: var(--accent); font-weight: 700; font-size: 10px; text-transform: uppercase; margin-right: 2px; }
+        /* --- INFO CENTER --- */
+        .info-center { position: absolute; bottom: 100px; left: 50%; transform: translateX(-50%) scale(1); background: var(--bg-info); border: 3px solid var(--primary); width: 500px; padding: 20px; text-align: center; transition: 0.6s; z-index: 50; }
+        .ic-title { font-family: 'Bebas Neue', cursive; font-size: 32px; margin-bottom: 5px; }
 
-        /* --- INFO CENTER & LOWER THIRD --- */
-        .info-center { position: absolute; bottom: 100px; left: 50%; transform: translateX(-50%) scale(1); background: var(--bg-info); border: 3px solid var(--primary); border-bottom: 8px solid var(--primary); width: 500px; padding: 20px; text-align: center; transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1); z-index: 50; }
-        .ic-title { font-family: 'Bebas Neue', cursive; font-size: 32px; color: var(--accent); margin-bottom: 5px; }
-        .ic-body { font-size: 17px; font-weight: 300; color: #efefef; }
-
-        .lower-third { position: absolute; bottom: 95px; left: 40px; display: flex; flex-direction: column; transition: all 0.8s cubic-bezier(0.16, 1, 0.3, 1); z-index: 60; }
+        /* --- LOWER THIRD --- */
+        .lower-third { position: absolute; bottom: 95px; left: 40px; display: flex; flex-direction: column; transition: 0.8s; z-index: 60; }
         .lt-main { background: var(--bg-lt); padding: 5px 30px; font-family: 'Montserrat', sans-serif; font-weight: 900; border-left: 6px solid var(--accent); width: fit-content; white-space: nowrap; }
         .lt-sub { background: rgba(0,0,0,0.8); padding: 3px 30px; font-size: 15px; font-weight: 300; text-transform: uppercase; width: fit-content; border-top: 1px solid rgba(255,255,255,0.1); }
 
         /* --- BARRA INFERIOR --- */
-        .bottom-container { position: absolute; bottom: 0; width: 100%; height: 75px; display: flex; align-items: stretch; z-index: 100; transition: all 0.6s; }
-        .brand-label { background: var(--accent); height: 100%; padding: 0 25px; display: flex; align-items: center; font-weight: 900; font-size: 22px; white-space: nowrap; flex-shrink: 0; transition: 0.4s; }
-        
-        .clock-ticker { background: var(--bg-clock); height: 100%; padding: 0 20px; display: flex; flex-direction: column; align-items: center; justify-content: center; border-right: 3px solid var(--accent); min-width: 180px; transition: 0.4s; }
+        .bottom-container { position: absolute; bottom: 0; width: 100%; height: 75px; display: flex; align-items: stretch; z-index: 100; transition: transform 0.6s; }
+        .brand-label { background: var(--accent); height: 100%; padding: 0 25px; display: flex; align-items: center; font-weight: 900; font-size: 22px; white-space: nowrap; flex-shrink: 0; position: relative; overflow: hidden; }
+        .brand-label::after { content: ''; position: absolute; top: 0; left: -150%; width: 200%; height: 100%; background: linear-gradient(135deg, rgba(255,255,255,0) 30%, rgba(255,255,255,0.4) 50%, rgba(255,255,255,0) 70%); animation: premium-sweep 5s infinite; }
+        @keyframes premium-sweep { 0% { left: -150%; } 50%, 100% { left: 150%; } }
+
+        .clock-ticker { background: var(--bg-clock); height: 100%; padding: 0 20px; display: flex; flex-direction: column; align-items: center; justify-content: center; min-width: 180px; }
         .time-row { display: flex; align-items: baseline; font-family: 'Bebas Neue', cursive; }
         #ui-time-main { font-size: 36px; line-height: 1; }
-        #ui-time-ampm { font-size: 18px; opacity: 0.9; margin-left: 6px; }
-        #ui-date-box { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; margin-top: -2px; color: rgba(255,255,255,0.7); }
 
-        .ticker-wrapper { flex: 1; height: 100%; background: var(--bg-ticker); display: flex; align-items: center; overflow: hidden; position: relative; transition: 0.4s; }
+        .ticker-wrapper { flex: 1; height: 100%; background: var(--bg-ticker); display: flex; align-items: center; overflow: hidden; position: relative; }
         .ticker-content { display: flex; white-space: nowrap; will-change: transform; animation: ticker-loop linear infinite; }
-        .ticker-text { padding-right: 100px; font-size: 20px; font-weight: 500; display: flex; align-items: center; }
+        .ticker-text { padding-right: 200px; font-size: 20px; font-weight: 500; display: flex; align-items: center; }
 
         @keyframes ticker-loop { 0% { transform: translate3d(0, 0, 0); } 100% { transform: translate3d(-50%, 0, 0); } }
 
-        /* --- ESTADOS DE OCULTACIÓN INDEPENDIENTE --- */
+        /* --- VISIBILIDAD --- */
         .element-hidden-hide { display: none !important; }
         .hidden-left { transform: translateX(-110%); opacity: 0; }
-        .info-hidden { transform: translate(-50%, 30px) scale(0.8); opacity: 0; pointer-events: none; }
-        .ticker-only-hidden { transform: translateY(85px); opacity: 0; }
+        .info-hidden { transform: translate(-50%, 30px) scale(0.8); opacity: 0; }
     </style>
 </head>
 <body>
@@ -114,21 +88,18 @@
             <div class="temp-box" id="ui-temp-box">--°C</div>
         </div>
         <div class="weather-details-row" id="ui-weather-details">
-            <div class="weather-info"><span class="weather-label">ST</span><span id="ui-feels-like">--°</span></div>
-            <div class="weather-info"><span class="weather-label">Hum</span><span id="ui-humidity">--%</span></div>
-            <div class="weather-info"><span class="weather-label">Viento</span><span id="ui-wind">-- km/h</span></div>
-            <div class="weather-info"><span class="weather-label">Presión</span><span id="ui-pressure">-- hPa</span></div>
+            <div class="weather-info"><span>ST</span><span id="ui-feels-like">--°</span></div>
+            <div class="weather-info"><span>Hum</span><span id="ui-humidity">--%</span></div>
+            <div class="weather-info"><span>Viento</span><span id="ui-wind">-- km/h</span></div>
+            <div class="weather-info"><span>Presión</span><span id="ui-pressure">-- hPa</span></div>
         </div>
     </div>
 
     <div class="bottom-container" id="ui-bottom-bar">
         <div class="brand-label" id="ui-brand">ELRIVERATV</div>
         <div class="clock-ticker" id="ui-clock-box">
-            <div class="time-row">
-                <span id="ui-time-main">00:00:00</span>
-                <span id="ui-time-ampm">AM</span>
-            </div>
-            <div id="ui-date-box">FECHA</div>
+            <div class="time-row"><span id="ui-time-main">00:00:00</span><span id="ui-time-ampm" style="margin-left:5px; font-size:18px">AM</span></div>
+            <div id="ui-date-box" style="font-size:11px; text-transform:uppercase; letter-spacing:1px;">FECHA</div>
         </div>
         <div class="ticker-wrapper" id="ui-ticker-wrapper">
             <div class="ticker-content" id="ui-ticker-content">
@@ -148,7 +119,6 @@
 
         let lastTickerText = "";
 
-        // Función para convertir color HEX a RGBA con opacidad
         function hexToRgba(hex, opacity) {
             let r = 0, g = 0, b = 0;
             if (!hex) return `rgba(0,0,0,${opacity})`;
@@ -160,7 +130,7 @@
         db.on('value', (snapshot) => {
             const data = snapshot.val() || {};
             
-            // 1. AJUSTES DE COLOR Y OPACIDAD INDEPENDIENTES
+            // 1. FONDOS Y COLORES BASE
             if(data.bgLT) document.documentElement.style.setProperty('--bg-lt', hexToRgba(data.bgLT, data.opLT || 0.85));
             if(data.bgInfo) document.documentElement.style.setProperty('--bg-info', hexToRgba(data.bgInfo, data.opInfo || 0.85));
             if(data.bgTicker) document.documentElement.style.setProperty('--bg-ticker', hexToRgba(data.bgTicker, data.opTicker || 0.85));
@@ -169,16 +139,7 @@
             document.documentElement.style.setProperty('--primary', data.colorPrimary || '#4A148C');
             document.documentElement.style.setProperty('--accent', data.colorAccent || '#E91E63');
 
-            // 2. TAMAÑOS DE TEXTO
-            if(data.sizeLTMain) document.getElementById('val-lt-main').style.fontSize = data.sizeLTMain + "px";
-            if(data.sizeInfoTitle) document.getElementById('val-info-title').style.fontSize = data.sizeInfoTitle + "px";
-            if(data.sizeTicker) {
-                document.getElementById('val-ticker-1').style.fontSize = data.sizeTicker + "px";
-                document.getElementById('val-ticker-2').style.fontSize = data.sizeTicker + "px";
-            }
-            if(data.sizeClock) document.getElementById('ui-time-main').style.fontSize = data.sizeClock + "px";
-
-            // 3. COLORES DE TEXTO INDEPENDIENTES
+            // 2. COLORES DE TEXTO (CORREGIDO: Solo cambian si el panel los envía)
             if(data.colorTextLT) document.getElementById('val-lt-main').style.color = data.colorTextLT;
             if(data.colorTextInfo) document.getElementById('val-info-title').style.color = data.colorTextInfo;
             if(data.colorTextTicker) {
@@ -187,46 +148,54 @@
             }
             if(data.colorTextClock) document.getElementById('ui-clock-box').style.color = data.colorTextClock;
 
-            // 4. VISIBILIDAD TOTALMENTE INDEPENDIENTE
+            // 3. TAMAÑOS
+            if(data.sizeLTMain) document.getElementById('val-lt-main').style.fontSize = data.sizeLTMain + "px";
+            if(data.sizeInfoTitle) document.getElementById('val-info-title').style.fontSize = data.sizeInfoTitle + "px";
+            if(data.sizeTicker) {
+                document.getElementById('val-ticker-1').style.fontSize = data.sizeTicker + "px";
+                document.getElementById('val-ticker-2').style.fontSize = data.sizeTicker + "px";
+            }
+            if(data.sizeClock) document.getElementById('ui-time-main').style.fontSize = data.sizeClock + "px";
+
+            // 4. VISIBILIDAD INDEPENDIENTE
             document.getElementById('ui-live-badge').classList.toggle('element-hidden-hide', data.showLive === 'false');
             document.getElementById('ui-location-box').classList.toggle('element-hidden-hide', data.showLocation === 'false');
             document.getElementById('ui-temp-box').classList.toggle('element-hidden-hide', data.showTemp === 'false');
             document.getElementById('ui-weather-details').classList.toggle('element-hidden', data.showTemp === 'false');
-            
             document.getElementById('ui-brand').classList.toggle('element-hidden-hide', data.showBrand === 'false');
             document.getElementById('ui-clock-box').classList.toggle('element-hidden-hide', data.showTime === 'false');
             document.getElementById('ui-ticker-wrapper').classList.toggle('element-hidden-hide', data.showWeather === 'false');
-
             document.getElementById('ui-lt-group').classList.toggle('hidden-left', data.showLowerThird !== 'true');
             document.getElementById('ui-info-center').classList.toggle('info-hidden', data.showInfoCenter !== 'true');
 
-            // 5. TICKER (TEXTO Y VELOCIDAD)
+            // 5. VELOCIDAD TICKER (Slider 1 = 120s Lento | Slider 100 = 20s Rápido)
             const currentTicker = (data.weatherText || "BIENVENIDOS...").toUpperCase();
-            if (currentTicker !== lastTickerText || data.tickerSpeed) {
+            if (currentTicker !== lastTickerText || data.tickerSpeed !== undefined) {
                 lastTickerText = currentTicker;
                 document.getElementById('val-ticker-1').innerText = currentTicker + "  •  ";
                 document.getElementById('val-ticker-2').innerText = currentTicker + "  •  ";
-                const speed = data.tickerSpeed || 25;
-                document.getElementById('ui-ticker-content').style.animationDuration = speed + "s";
+                let speedInput = parseInt(data.tickerSpeed) || 50;
+                let duration = 121 - speedInput; 
+                document.getElementById('ui-ticker-content').style.animationDuration = duration + "s";
             }
 
-            // Textos Actualizables
-            if(data.ltMain) document.getElementById('val-lt-main').innerText = data.ltMain.toUpperCase();
-            if(data.ltSub) document.getElementById('val-lt-sub').innerText = data.ltSub.toUpperCase();
-            if(data.infoTitle) document.getElementById('val-info-title').innerText = data.infoTitle.toUpperCase();
-            if(data.infoBody) document.getElementById('val-info-body').innerText = data.infoBody;
-            if(data.location) document.getElementById('ui-location-box').innerText = data.location.toUpperCase();
+            // Actualización de textos
+            document.getElementById('val-lt-main').innerText = (data.ltMain || "").toUpperCase();
+            document.getElementById('val-lt-sub').innerText = (data.ltSub || "").toUpperCase();
+            document.getElementById('val-info-title').innerText = (data.infoTitle || "").toUpperCase();
+            document.getElementById('val-info-body').innerText = data.infoBody || "";
+            document.getElementById('ui-location-box').innerText = (data.location || "TEPIC").toUpperCase();
         });
 
-        // Reloj con formato 12 Horas y Fecha con Año
+        // Reloj 12h + Fecha con Año
         setInterval(() => {
             const now = new Date();
-            // Formato 12 horas: hh:mm:ss
-            let timeStr = now.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: true });
-            let parts = timeStr.split(' ');
-            document.getElementById('ui-time-main').innerText = parts[0];
-            document.getElementById('ui-time-ampm').innerText = parts[1];
-            
+            let h = now.getHours(), m = now.getMinutes().toString().padStart(2, '0'), s = now.getSeconds().toString().padStart(2, '0');
+            let ampm = h >= 12 ? 'PM' : 'AM';
+            h = h % 12 || 12; 
+            document.getElementById('ui-time-main').innerText = `${h.toString().padStart(2, '0')}:${m}:${s}`;
+            document.getElementById('ui-time-ampm').innerText = ampm;
+
             const options = { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' };
             document.getElementById('ui-date-box').innerText = now.toLocaleDateString('es-MX', options).toUpperCase();
         }, 1000);
@@ -234,14 +203,14 @@
         async function updateWeather() {
             try {
                 const res = await fetch('https://api.open-meteo.com/v1/forecast?latitude=21.509&longitude=-104.895&current_weather=true&hourly=apparent_temperature,surface_pressure,relative_humidity_2m');
-                const data = await res.json();
-                document.getElementById('ui-temp-box').innerText = `${Math.round(data.current_weather.temperature)}°C`;
-                document.getElementById('ui-wind').innerText = `${Math.round(data.current_weather.windspeed)} km/h`;
-                const hIndex = new Date().getHours();
-                document.getElementById('ui-feels-like').innerText = `${Math.round(data.hourly.apparent_temperature[hIndex])}°`;
-                document.getElementById('ui-humidity').innerText = `${data.hourly.relative_humidity_2m[hIndex]}%`;
-                document.getElementById('ui-pressure').innerText = `${Math.round(data.hourly.surface_pressure[hIndex])} hPa`;
-            } catch (e) { console.error(e); }
+                const d = await res.json();
+                document.getElementById('ui-temp-box').innerText = `${Math.round(d.current_weather.temperature)}°C`;
+                document.getElementById('ui-wind').innerText = `${Math.round(d.current_weather.windspeed)} km/h`;
+                const h = new Date().getHours();
+                document.getElementById('ui-feels-like').innerText = `${Math.round(d.hourly.apparent_temperature[h])}°`;
+                document.getElementById('ui-humidity').innerText = `${d.hourly.relative_humidity_2m[h]}%`;
+                document.getElementById('ui-pressure').innerText = `${Math.round(d.hourly.surface_pressure[h])} hPa`;
+            } catch (e) {}
         }
         setInterval(updateWeather, 900000); updateWeather();
     </script>
