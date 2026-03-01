@@ -25,8 +25,8 @@
             position: absolute; top: 40px; left: 40px;
             display: flex; flex-direction: column;
             transition: all 0.8s cubic-bezier(0.16, 1, 0.3, 1);
-            width: fit-content;
             z-index: 70;
+            width: fit-content;
         }
         .live-row, .date-row { display: flex; align-items: stretch; margin-bottom: 4px; overflow: hidden; width: fit-content; }
         .live-status { background: var(--primary); padding: 8px 25px; font-weight: 700; text-transform: uppercase; font-size: 18px; letter-spacing: 2px; border-left: 8px solid var(--accent); white-space: nowrap; transition: all 0.6s; }
@@ -56,17 +56,61 @@
         .lt-main { background: var(--primary); padding: 5px 30px; font-family: 'Bebas Neue', cursive; font-size: 35px; border-left: 6px solid var(--accent); width: fit-content; white-space: nowrap; }
         .lt-sub { background: var(--glass); padding: 3px 30px; font-size: 15px; font-weight: 300; text-transform: uppercase; width: fit-content; border-top: 1px solid rgba(255,255,255,0.1); }
 
-        /* --- TICKER DINÁMICO --- */
+        /* --- TICKER Y RELOJ (TAMAÑO RESTAURADO) --- */
         .bottom-container { position: absolute; bottom: 0; width: 100%; height: 60px; display: flex; align-items: stretch; z-index: 100; transition: all 0.6s; }
         .brand-label { background: var(--accent); height: 100%; padding: 0 25px; display: flex; align-items: center; font-weight: 900; font-size: 22px; white-space: nowrap; flex-shrink: 0; transition: all 0.6s; }
-        .clock-ticker { background: var(--primary); height: 100%; padding: 0 20px; display: flex; align-items: center; justify-content: center; font-family: 'Bebas Neue', cursive; border-right: 3px solid var(--accent); min-width: 140px; transition: all 0.6s; }
-        #ui-time-main { font-size: 34px; line-height: 1; margin-right: 8px; }
         
-        .ticker-wrapper { flex: 1; height: 100%; background: var(--glass); display: flex; align-items: center; overflow: hidden; transition: all 0.8s; }
-        .ticker-content { display: flex; width: max-content; white-space: nowrap; will-change: transform; animation: ticker-loop linear infinite; }
-        .ticker-text { padding-right: 80px; font-size: 20px; font-weight: 500; display: inline-block; }
+        .clock-ticker { 
+            background: var(--primary); 
+            height: 100%; 
+            padding: 0 15px; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            font-family: 'Bebas Neue', cursive; 
+            border-right: 3px solid var(--accent); 
+            min-width: 160px; 
+            transition: all 0.6s; 
+        }
+        
+        #ui-time-main { 
+            font-size: 36px; /* Tamaño solicitado */
+            line-height: 1; 
+        }
 
-        @keyframes ticker-loop { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
+        #ui-time-ampm {
+            font-size: 18px;
+            opacity: 0.9;
+            margin-left: 8px;
+            margin-top: 4px;
+        }
+
+        .ticker-wrapper { 
+            flex: 1; height: 100%; background: var(--glass); 
+            display: flex; align-items: center; 
+            overflow: hidden; 
+            position: relative;
+        }
+
+        .ticker-content {
+            display: flex;
+            white-space: nowrap;
+            will-change: transform; 
+            animation: ticker-loop linear infinite;
+        }
+
+        .ticker-text {
+            padding-right: 100px; 
+            font-size: 20px;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+        }
+
+        @keyframes ticker-loop {
+            0% { transform: translate3d(0, 0, 0); }
+            100% { transform: translate3d(-50%, 0, 0); }
+        }
 
         /* --- ESTADOS DE OCULTACIÓN --- */
         .element-hidden { max-width: 0 !important; min-width: 0 !important; padding: 0 !important; opacity: 0 !important; border: none !important; margin: 0 !important; overflow: hidden; }
@@ -102,10 +146,13 @@
         <div class="brand-label" id="ui-brand">ELRIVERATV</div>
         <div class="clock-ticker" id="ui-clock-box">
             <span id="ui-time-main">00:00:00</span>
-            <span id="ui-time-ampm" style="font-size: 16px; opacity: 0.8;">AM</span>
+            <span id="ui-time-ampm">AM</span>
         </div>
         <div class="ticker-wrapper" id="ui-ticker-wrapper">
-            <div class="ticker-content" id="ui-ticker-content"></div>
+            <div class="ticker-content" id="ui-ticker-content">
+                <span class="ticker-text" id="val-ticker-1"></span>
+                <span class="ticker-text" id="val-ticker-2"></span>
+            </div>
         </div>
     </div>
 
@@ -113,51 +160,42 @@
     <script src="https://www.gstatic.com/firebasejs/9.17.1/firebase-database-compat.js"></script>
 
     <script>
-        // Configuración de Firebase
-        const firebaseConfig = { 
-            databaseURL: "https://elriveratv-28c69-default-rtdb.firebaseio.com/" 
-        };
+        const firebaseConfig = { databaseURL: "https://elriveratv-28c69-default-rtdb.firebaseio.com/" };
         firebase.initializeApp(firebaseConfig);
         const db = firebase.database().ref('overlayData');
 
         let lastTickerText = "";
 
-        // Reloj y Fecha Local
         function updateTime() {
             const now = new Date();
-            const parts = now.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: true }).split(' ');
-            document.getElementById('ui-time-main').innerText = parts[0];
-            document.getElementById('ui-time-ampm').innerText = parts[1].toUpperCase();
+            const timeParts = now.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: true }).split(' ');
+            document.getElementById('ui-time-main').innerText = timeParts[0];
+            document.getElementById('ui-time-ampm').innerText = timeParts[1].toUpperCase();
             document.getElementById('ui-date-box').innerText = now.toLocaleDateString('es-MX', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' }).toUpperCase();
         }
 
-        // Clima (Tepic, Nayarit)
         async function updateWeather() {
             try {
                 const res = await fetch('https://api.open-meteo.com/v1/forecast?latitude=21.509&longitude=-104.895&current_weather=true');
                 const data = await res.json();
                 document.getElementById('ui-temp-box').innerText = `${Math.round(data.current_weather.temperature)}°C`;
-            } catch (e) { console.error("Error Clima:", e); }
+            } catch (e) {}
         }
 
-        // Sincronización en Tiempo Real
         db.on('value', (snapshot) => {
             const data = snapshot.val() || {};
             
-            // Colores
             document.documentElement.style.setProperty('--primary', data.colorPrimary || '#4A148C');
             document.documentElement.style.setProperty('--accent', data.colorAccent || '#E91E63');
 
-            // Visibilidad (Toggle por String de Firebase)
             document.getElementById('ui-live-badge').classList.toggle('element-hidden', data.showLive === 'false');
             document.getElementById('ui-location-box').classList.toggle('element-hidden', data.showLocation === 'false');
             document.getElementById('ui-temp-box').classList.toggle('element-hidden', data.showTemp === 'false');
             document.getElementById('ui-date-box').classList.toggle('element-hidden', data.showClock === 'false');
             document.getElementById('ui-brand').classList.toggle('element-hidden', data.showBrand === 'false');
             document.getElementById('ui-clock-box').classList.toggle('element-hidden', data.showTime === 'false');
-            document.getElementById('ui-ticker-wrapper').classList.toggle('ticker-only-hidden', data.showWeather === 'false');
+            document.getElementById('ui-bottom-bar').classList.toggle('ticker-only-hidden', data.showWeather === 'false');
 
-            // Lower Third & Info Center
             document.getElementById('ui-lt-group').classList.toggle('hidden-left', data.showLowerThird !== 'true');
             if(data.ltMain) document.getElementById('val-lt-main').innerText = data.ltMain.toUpperCase();
             if(data.ltSub) document.getElementById('val-lt-sub').innerText = data.ltSub.toUpperCase();
@@ -166,20 +204,19 @@
             if(data.infoTitle) document.getElementById('val-info-title').innerText = data.infoTitle.toUpperCase();
             if(data.infoBody) document.getElementById('val-info-body').innerText = data.infoBody;
 
-            // Ticker dinámico con repetición
             const currentTicker = (data.weatherText || "BIENVENIDOS A ELRIVERATV...").toUpperCase();
             if (currentTicker !== lastTickerText) {
                 lastTickerText = currentTicker;
-                const container = document.getElementById('ui-ticker-content');
-                container.innerHTML = '';
-                const repetitions = 8;
-                for(let i=0; i < repetitions; i++) {
-                    const span = document.createElement('span');
-                    span.className = 'ticker-text';
-                    span.innerText = currentTicker + "  •  ";
-                    container.appendChild(span);
-                }
-                container.style.animationDuration = `${Math.max(12, (currentTicker.length * repetitions) / 10)}s`;
+                const t1 = document.getElementById('val-ticker-1');
+                const t2 = document.getElementById('val-ticker-2');
+                const content = document.getElementById('ui-ticker-content');
+                
+                t1.innerText = currentTicker + "  •  ";
+                t2.innerText = currentTicker + "  •  ";
+
+                const speedFactor = 15;
+                const duration = Math.max(10, currentTicker.length / speedFactor * 10);
+                content.style.animationDuration = `${duration}s`;
             }
 
             if(data.location) document.getElementById('ui-location-box').innerText = data.location.toUpperCase();
