@@ -3,12 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Montserrat:wght@700;900&family=Oswald:wght@300;500;700&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Montserrat:wght@300;700;900&family=Oswald:wght@300;500;700&display=swap');
 
         :root {
             --primary: #4A148C;
             --accent: #E91E63;
-            --glass: rgba(0, 0, 0, 0.85);
+            --glass-bg: rgba(0, 0, 0, 0.85); /* Opacidad dinámica */
             --white: #ffffff;
         }
 
@@ -28,64 +28,68 @@
             z-index: 70;
             width: fit-content;
         }
-        .live-row, .weather-details-row { display: flex; align-items: stretch; margin-bottom: 4px; overflow: hidden; width: fit-content; }
+        .live-row { display: flex; align-items: stretch; margin-bottom: 4px; overflow: hidden; width: fit-content; }
         
         .live-status { background: var(--primary); padding: 8px 25px; font-weight: 700; text-transform: uppercase; font-size: 18px; letter-spacing: 2px; border-left: 8px solid var(--accent); white-space: nowrap; transition: all 0.6s; }
-        .location-box { background: var(--glass); padding: 8px 20px; font-size: 18px; font-weight: 400; border-left: 2px solid rgba(255,255,255,0.2); white-space: nowrap; transition: all 0.6s; }
-        
-        /* Recuadros de Clima */
+        .location-box { background: var(--glass-bg); padding: 8px 20px; font-size: 18px; font-weight: 400; border-left: 2px solid rgba(255,255,255,0.2); white-space: nowrap; transition: all 0.6s; }
         .temp-box { background: var(--accent); padding: 8px 20px; font-weight: 700; font-size: 18px; border-left: 1px solid rgba(255,255,255,0.3); white-space: nowrap; transition: all 0.6s; }
-        .weather-info { background: var(--glass); padding: 6px 15px; font-size: 14px; font-weight: 500; border-left: 1px solid rgba(255,255,255,0.1); white-space: nowrap; display: flex; align-items: center; gap: 5px; }
+
+        /* --- FILA DETALLES CLIMA CON ANIMACIÓN --- */
+        .weather-details-row { 
+            display: flex; 
+            align-items: stretch; 
+            margin-bottom: 4px; 
+            overflow: hidden; 
+            width: fit-content; 
+            transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.5s ease, max-height 0.6s ease;
+            opacity: 1;
+            transform: translateY(0);
+            max-height: 50px;
+        }
+
+        /* Estado Oculto (Salida Deslizante) */
+        .weather-details-row.element-hidden {
+            display: flex !important;
+            opacity: 0 !important;
+            transform: translateY(-20px) !important;
+            max-height: 0 !important;
+            margin-bottom: 0 !important;
+            pointer-events: none;
+        }
+        
+        .weather-info { background: var(--glass-bg); padding: 6px 15px; font-size: 14px; font-weight: 500; border-left: 1px solid rgba(255,255,255,0.1); white-space: nowrap; display: flex; align-items: center; gap: 5px; }
         .weather-label { color: var(--accent); font-weight: 700; font-size: 10px; text-transform: uppercase; margin-right: 2px; }
 
         /* --- INFO CENTER & LOWER THIRD --- */
-        .info-center { position: absolute; bottom: 85px; left: 50%; transform: translateX(-50%) scale(1); background: var(--glass); border: 3px solid var(--primary); border-bottom: 8px solid var(--primary); width: 500px; padding: 20px; text-align: center; transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1); z-index: 50; }
+        .info-center { position: absolute; bottom: 100px; left: 50%; transform: translateX(-50%) scale(1); background: var(--glass-bg); border: 3px solid var(--primary); border-bottom: 8px solid var(--primary); width: 500px; padding: 20px; text-align: center; transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1); z-index: 50; }
         .ic-title { font-family: 'Bebas Neue', cursive; font-size: 32px; color: var(--accent); margin-bottom: 5px; }
         .ic-body { font-size: 17px; font-weight: 300; color: #efefef; }
-        .lower-third { position: absolute; bottom: 80px; left: 40px; display: flex; flex-direction: column; transition: all 0.8s cubic-bezier(0.16, 1, 0.3, 1); z-index: 60; }
+
+        .lower-third { position: absolute; bottom: 95px; left: 40px; display: flex; flex-direction: column; transition: all 0.8s cubic-bezier(0.16, 1, 0.3, 1); z-index: 60; }
         .lt-main { background: var(--primary); padding: 5px 30px; font-family: 'Bebas Neue', cursive; font-size: 35px; border-left: 6px solid var(--accent); width: fit-content; white-space: nowrap; }
-        .lt-sub { background: var(--glass); padding: 3px 30px; font-size: 15px; font-weight: 300; text-transform: uppercase; width: fit-content; border-top: 1px solid rgba(255,255,255,0.1); }
+        .lt-sub { background: var(--glass-bg); padding: 3px 30px; font-size: 15px; font-weight: 300; text-transform: uppercase; width: fit-content; border-top: 1px solid rgba(255,255,255,0.1); }
 
         /* --- TICKER Y RELOJ UNIFICADO --- */
         .bottom-container { position: absolute; bottom: 0; width: 100%; height: 75px; display: flex; align-items: stretch; z-index: 100; transition: all 0.6s; }
         .brand-label { background: var(--accent); height: 100%; padding: 0 25px; display: flex; align-items: center; font-weight: 900; font-size: 22px; white-space: nowrap; flex-shrink: 0; }
         
-        .clock-ticker { 
-            background: var(--primary); 
-            height: 100%; 
-            padding: 0 20px; 
-            display: flex; 
-            flex-direction: column; 
-            align-items: center; 
-            justify-content: center; 
-            border-right: 3px solid var(--accent); 
-            min-width: 180px; 
-        }
-
+        .clock-ticker { background: var(--primary); height: 100%; padding: 0 20px; display: flex; flex-direction: column; align-items: center; justify-content: center; border-right: 3px solid var(--accent); min-width: 180px; }
         .time-row { display: flex; align-items: baseline; font-family: 'Bebas Neue', cursive; }
         #ui-time-main { font-size: 36px; line-height: 1; }
         #ui-time-ampm { font-size: 18px; opacity: 0.9; margin-left: 6px; }
+        #ui-date-box { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; margin-top: -2px; color: rgba(255,255,255,0.7); }
 
-        #ui-date-box { 
-            font-size: 11px; 
-            font-weight: 700; 
-            text-transform: uppercase; 
-            letter-spacing: 1px; 
-            margin-top: -2px; 
-            color: rgba(255,255,255,0.7);
-        }
-
-        .ticker-wrapper { flex: 1; height: 100%; background: var(--glass); display: flex; align-items: center; overflow: hidden; position: relative; }
+        .ticker-wrapper { flex: 1; height: 100%; background: var(--glass-bg); display: flex; align-items: center; overflow: hidden; position: relative; }
         .ticker-content { display: flex; white-space: nowrap; will-change: transform; animation: ticker-loop linear infinite; }
         .ticker-text { padding-right: 100px; font-size: 20px; font-weight: 500; display: flex; align-items: center; }
 
         @keyframes ticker-loop { 0% { transform: translate3d(0, 0, 0); } 100% { transform: translate3d(-50%, 0, 0); } }
 
         /* --- ESTADOS --- */
-        .element-hidden { max-width: 0 !important; min-width: 0 !important; padding: 0 !important; opacity: 0 !important; border: none !important; margin: 0 !important; overflow: hidden; }
+        .element-hidden-fast { display: none !important; }
         .hidden-left { transform: translateX(-110%); opacity: 0; }
         .info-hidden { transform: translate(-50%, 30px) scale(0.8); opacity: 0; pointer-events: none; }
-        .ticker-only-hidden { transform: translateY(80px); opacity: 0; }
+        .ticker-only-hidden { transform: translateY(85px); opacity: 0; }
     </style>
 </head>
 <body>
@@ -146,7 +150,6 @@
             const timeParts = now.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: true }).split(' ');
             document.getElementById('ui-time-main').innerText = timeParts[0];
             document.getElementById('ui-time-ampm').innerText = timeParts[1].toUpperCase();
-            
             const options = { weekday: 'long', day: 'numeric', month: 'long' };
             document.getElementById('ui-date-box').innerText = now.toLocaleDateString('es-MX', options).toUpperCase();
         }
@@ -155,51 +158,66 @@
             try {
                 const res = await fetch('https://api.open-meteo.com/v1/forecast?latitude=21.509&longitude=-104.895&current_weather=true&hourly=apparent_temperature,surface_pressure,relative_humidity_2m');
                 const data = await res.json();
-                
                 document.getElementById('ui-temp-box').innerText = `${Math.round(data.current_weather.temperature)}°C`;
                 document.getElementById('ui-wind').innerText = `${Math.round(data.current_weather.windspeed)} km/h`;
-                
-                const hourIndex = new Date().getHours();
-                document.getElementById('ui-feels-like').innerText = `${Math.round(data.hourly.apparent_temperature[hourIndex])}°`;
-                document.getElementById('ui-humidity').innerText = `${data.hourly.relative_humidity_2m[hourIndex]}%`;
-                document.getElementById('ui-pressure').innerText = `${Math.round(data.hourly.surface_pressure[hourIndex])} hPa`;
-            } catch (e) { console.error("Error Clima:", e); }
+                const hIndex = new Date().getHours();
+                document.getElementById('ui-feels-like').innerText = `${Math.round(data.hourly.apparent_temperature[hIndex])}°`;
+                document.getElementById('ui-humidity').innerText = `${data.hourly.relative_humidity_2m[hIndex]}%`;
+                document.getElementById('ui-pressure').innerText = `${Math.round(data.hourly.surface_pressure[hIndex])} hPa`;
+            } catch (e) { console.error(e); }
         }
 
         db.on('value', (snapshot) => {
             const data = snapshot.val() || {};
+            
+            // --- 1. APLICAR AJUSTES DE ESTILO (NUEVO) ---
             document.documentElement.style.setProperty('--primary', data.colorPrimary || '#4A148C');
             document.documentElement.style.setProperty('--accent', data.colorAccent || '#E91E63');
+            if(data.opGlass !== undefined) document.documentElement.style.setProperty('--glass-bg', `rgba(0,0,0,${data.opGlass})`);
 
-            document.getElementById('ui-live-badge').classList.toggle('element-hidden', data.showLive === 'false');
-            document.getElementById('ui-location-box').classList.toggle('element-hidden', data.showLocation === 'false');
+            // Tamaños
+            if(data.sizeLTMain) document.getElementById('val-lt-main').style.fontSize = data.sizeLTMain + "px";
+            if(data.sizeLTSub) document.getElementById('val-lt-sub').style.fontSize = data.sizeLTSub + "px";
+            if(data.sizeInfoTitle) document.getElementById('val-info-title').style.fontSize = data.sizeInfoTitle + "px";
+            if(data.sizeTicker) {
+                document.getElementById('val-ticker-1').style.fontSize = data.sizeTicker + "px";
+                document.getElementById('val-ticker-2').style.fontSize = data.sizeTicker + "px";
+            }
+
+            // Colores de texto
+            if(data.colorTextLT) document.getElementById('val-lt-main').style.color = data.colorTextLT;
+            if(data.colorTextInfo) document.getElementById('val-info-title').style.color = data.colorTextInfo;
+
+            // --- 2. VISIBILIDAD ---
+            document.getElementById('ui-live-badge').classList.toggle('element-hidden-fast', data.showLive === 'false');
+            document.getElementById('ui-location-box').classList.toggle('element-hidden-fast', data.showLocation === 'false');
+            document.getElementById('ui-temp-box').classList.toggle('element-hidden-fast', data.showTemp === 'false');
             
-            const showT = data.showTemp === 'false';
-            document.getElementById('ui-temp-box').classList.toggle('element-hidden', showT);
-            document.getElementById('ui-weather-details').classList.toggle('element-hidden', showT);
+            // Animación de salida para el viento/detalles
+            document.getElementById('ui-weather-details').classList.toggle('element-hidden', data.showTemp === 'false');
 
-            document.getElementById('ui-clock-box').classList.toggle('element-hidden', data.showTime === 'false');
-            document.getElementById('ui-brand').classList.toggle('element-hidden', data.showBrand === 'false');
+            document.getElementById('ui-clock-box').classList.toggle('element-hidden-fast', data.showTime === 'false');
+            document.getElementById('ui-brand').classList.toggle('element-hidden-fast', data.showBrand === 'false');
             document.getElementById('ui-bottom-bar').classList.toggle('ticker-only-hidden', data.showWeather === 'false');
-
             document.getElementById('ui-lt-group').classList.toggle('hidden-left', data.showLowerThird !== 'true');
+            document.getElementById('ui-info-center').classList.toggle('info-hidden', data.showInfoCenter !== 'true');
+
+            // --- 3. TEXTOS ---
             if(data.ltMain) document.getElementById('val-lt-main').innerText = data.ltMain.toUpperCase();
             if(data.ltSub) document.getElementById('val-lt-sub').innerText = data.ltSub.toUpperCase();
-
-            document.getElementById('ui-info-center').classList.toggle('info-hidden', data.showInfoCenter !== 'true');
             if(data.infoTitle) document.getElementById('val-info-title').innerText = data.infoTitle.toUpperCase();
             if(data.infoBody) document.getElementById('val-info-body').innerText = data.infoBody;
+            if(data.location) document.getElementById('ui-location-box').innerText = data.location.toUpperCase();
 
+            // --- 4. TICKER (TEXTO Y VELOCIDAD) ---
             const currentTicker = (data.weatherText || "BIENVENIDOS...").toUpperCase();
-            if (currentTicker !== lastTickerText) {
+            if (currentTicker !== lastTickerText || data.tickerSpeed) {
                 lastTickerText = currentTicker;
                 document.getElementById('val-ticker-1').innerText = currentTicker + "  •  ";
                 document.getElementById('val-ticker-2').innerText = currentTicker + "  •  ";
-                const speedFactor = 15;
-                const duration = Math.max(10, currentTicker.length / speedFactor * 10);
-                document.getElementById('ui-ticker-content').style.animationDuration = `${duration}s`;
+                const speed = data.tickerSpeed || 20;
+                document.getElementById('ui-ticker-content').style.animationDuration = speed + "s";
             }
-            if(data.location) document.getElementById('ui-location-box').innerText = data.location.toUpperCase();
         });
 
         setInterval(updateTime, 1000);
